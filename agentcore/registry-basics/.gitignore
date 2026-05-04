@@ -1,0 +1,5 @@
+# Runtime state (ARNs saved by Makefile targets)
+tmp/
+
+# macOS
+.DS_Store
