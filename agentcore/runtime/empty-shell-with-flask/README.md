@@ -1,10 +1,11 @@
-# AgentCore Runtime - Empty Shell with Expressjs
+# AgentCore Runtime - Empty Shell with Flask
 
-A minimal [Amazon Bedrock AgentCore Runtime](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.html) that echoes back the received payload. Uses Express.js to implement AgentCore's HTTP interface. 
+A minimal [Amazon Bedrock AgentCore Runtime](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.html) that echoes back the received payload. Uses Flask to implement AgentCore's HTTP interface.
 
 ## Prerequisites
 
-- Node 22+
+- Python 3.13+
+- [uv](https://docs.astral.sh/uv/) (Python package manager)
 - AWS CLI configured with appropriate credentials
 - Terraform
 - Docker
@@ -18,9 +19,10 @@ A minimal [Amazon Bedrock AgentCore Runtime](https://docs.aws.amazon.com/bedrock
 ├── README.md
 ├── src/
 │   └── agent/
-│       ├── index.js        # AgentCore runtime entrypoint (Express.js)
-│       ├── Dockerfile      # Container image definition
-│       └── package.json    # Node.js dependencies
+│       ├── main.py         # AgentCore runtime entrypoint (Flask)
+│       ├── pyproject.toml  # Python dependencies
+│       ├── uv.lock         # Locked dependency versions
+│       └── Dockerfile      # Container image definition
 ├── terraform/
 │   ├── providers.tf        # Provider config, locals, shared random prefix
 │   ├── main.tf             # Module wiring
@@ -117,4 +119,3 @@ make destroy
 ```
 
 Destroys all Terraform-managed resources and deletes the `tmp/` directory.
-
