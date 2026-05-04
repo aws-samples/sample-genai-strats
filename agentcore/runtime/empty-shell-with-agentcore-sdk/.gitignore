@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# uv
+.python-version
+
+# Logs
+*.log
+
+# Terraform
+tmp/
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
