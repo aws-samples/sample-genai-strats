@@ -39,8 +39,9 @@ The workshop constists of three major steps, each one implements activities perf
 ```bash
 git clone --no-checkout --depth 1 https://github.com/aws-samples/sample-genai-strats
 cd sample-genai-strats
-git sparse-checkout set workshops/agentcore-workday-integration
-git checkout
+git sparse-checkout set workshops/agentcore-workday-integration && git checkout
+cd workshops/agentcore-workday-integration
+
 ```
 
 ## Step 2 - Obtain Integration API Client access_token and Agent Card for Self-service Agent
