@@ -1,12 +1,17 @@
 import boto3
 import json
 import uuid
+import os
+
+session = boto3.session.Session()
+region = session.region_name or os.environ['AWS_REGION']
+print(f"Region: {region}")
 
 class RemoteTransport:
     def __init__(self, agent_runtime_arn: str):
         self.agent_runtime_arn = agent_runtime_arn
         self.session_id = str(uuid.uuid4())
-        self.client = boto3.client("bedrock-agentcore")
+        self.client = boto3.client("bedrock-agentcore", region_name=region)
 
     def _invoke(self, cmd: dict) -> dict:
         response = self.client.invoke_agent_runtime(
