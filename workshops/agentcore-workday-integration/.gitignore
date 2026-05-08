@@ -1,0 +1,34 @@
+# Temp outputs
+tmp/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+
+# uv
+.uv/
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+.terraform.lock.hcl
+
+# Generated files
+agent/agent_card.json
+agent/.env
+workday-integration/.env
+dashboard/.env
+
+.env_backup
+
+# OS
+.DS_Store
+*.bkp
+
+.agentcore.json
+.vscode
+

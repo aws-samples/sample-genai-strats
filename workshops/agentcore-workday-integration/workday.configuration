@@ -1,0 +1,16 @@
+# Copy these values from Workday
+INTEGRATION_CLIENT_ID=
+INTEGRATION_CLIENT_SECRET=
+INTEGRATION_CLIENT_AUTHZ_ENDPOINT=https://us.agent.workday.com/auth/authorize/{TENANT_ID}
+INTEGRATION_CLIENT_TOKEN_ENDPOINT=https://agent.us.wcp.workday.com/auth/oauth2/{TENANT_ID}/token
+AGENT_CARD_URL=https://us.agent.workday.com/v1/a2a/{TENANT_ID}/self-service-agent/.well-known/agent-card.json
+
+# Configure Workday's Integration API Client with this Redirect URI
+INTEGRATION_CLIENT_REDIRECT_URI=https://9svcav6rs3.execute-api.us-east-1.amazonaws.com
+
+# Copy these values from Workday
+AGENT_CLIENT_ID=
+AGENT_CLIENT_SECRET=
+AGENT_CLIENT_ISSUER=https://wcpdev-services1.wd103.myworkday.com/ccx/api/v1/{TENANT_ID}
+AGENT_CLIENT_AUTHZ_ENDPOINT=https://us.agent.workday.com/auth/authorize/{TENANT_ID}
+AGENT_CLIENT_TOKEN_ENDPOINT=https://agent.us.wcp.workday.com/auth/oauth2/{TENANT_ID}/token

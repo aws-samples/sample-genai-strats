@@ -1,0 +1,5 @@
+from handle_integration_client_authz import handle_integration_client_authz
+from retrieve_agent_card_a2a import retrieve_agent_card
+
+handle_integration_client_authz()
+retrieve_agent_card()
