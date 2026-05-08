@@ -37,11 +37,10 @@ The workshop constists of three major steps, each one implements activities perf
 ## Step 1 - Clone the workshop from Github
 
 ```bash
-git clone --no-checkout --depth 1 https://github.com/aal80/agentcore-workshops # TBD
-cd agentcore-workshops
-git sparse-checkout set workday-integration
+git clone --no-checkout --depth 1 https://github.com/aws-samples/sample-genai-strats
+cd sample-genai-strats
+git sparse-checkout set workshops/agentcore-workday-integration
 git checkout
-cd workday-integration
 ```
 
 ## Step 2 - Obtain Integration API Client access_token and Agent Card for Self-service Agent
