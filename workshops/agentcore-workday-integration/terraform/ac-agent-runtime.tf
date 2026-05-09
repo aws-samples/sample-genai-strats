@@ -82,9 +82,8 @@ resource "aws_bedrockagentcore_agent_runtime" "agent" {
   environment_variables = {
     WORKLOAD_IDENTITY_NAME=aws_bedrockagentcore_workload_identity.hr_agent.name
     CREDENTIAL_PROVIDER_NAME=aws_bedrockagentcore_oauth2_credential_provider.workday_agent_client.name
+    AGENT_ZIP_ETAG=filemd5("${path.root}/../tmp/agent_package/agent.zip")
   }
-
-  depends_on = [ aws_s3_object.agent_zip ]
 }
 
 locals {

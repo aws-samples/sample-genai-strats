@@ -3,18 +3,22 @@ import os
 import asyncio
 from bedrock_agentcore.services.identity import IdentityClient, UserIdIdentifier
 
-USER_ID="user3"
+DEFAULT_TEST_USER_ID="defaulttestuser"
 WORKLOAD_IDENTITY_NAME = os.getenv("WORKLOAD_IDENTITY_NAME")
 CREDENTIAL_PROVIDER_NAME = os.getenv("CREDENTIAL_PROVIDER_NAME")
 print(f"WORKLOAD_IDENTITY_NAME={WORKLOAD_IDENTITY_NAME}")
 print(f"CREDENTIAL_PROVIDER_NAME={CREDENTIAL_PROVIDER_NAME}")
-print(f"USER_ID={USER_ID}")
+print(f"DEFAULT_TEST_USER_ID={DEFAULT_TEST_USER_ID}")
 
 region = boto3.session.Session().region_name
 identity_client = IdentityClient(region)
 
 async def initialize(payload):
     print("> initialize")
+    callback_url = payload.get("callback_url")
+    user_id = payload.get("user_id", DEFAULT_TEST_USER_ID)
+    print(f"| callback_url={callback_url}")
+    print(f"| user_id={user_id}")
 
     loop = asyncio.get_event_loop()
     auth_url_future = loop.create_future()
@@ -26,7 +30,10 @@ async def initialize(payload):
             auth_url_future.set_result(url)
 
     async def run_and_capture_token():
-        token = await get_access_token(on_auth_url_cb=capture_auth_url)
+        token = await get_access_token(
+            on_auth_url_cb=capture_auth_url, 
+            callback_url=callback_url, 
+            user_id=user_id)
         if not token_future.done():
             token_future.set_result(token)
 
@@ -45,10 +52,12 @@ async def initialize(payload):
     return {"status":"ok"}
 
 
-async def get_access_token(on_auth_url_cb):
+async def get_access_token(on_auth_url_cb, callback_url, user_id):
     print("> get_access_token")
+    print(f"| callback_url={callback_url}")
+    print(f"| user_id={user_id}")
     print(f"| getting workload access token")
-    response = identity_client.get_workload_access_token(workload_name=WORKLOAD_IDENTITY_NAME, user_id=USER_ID)
+    response = identity_client.get_workload_access_token(workload_name=WORKLOAD_IDENTITY_NAME, user_id=user_id)
     workload_access_token = response.get("workloadAccessToken")
     print(f"| workload_access_token={workload_access_token[:10]}...REDACTED...")
 
@@ -58,7 +67,7 @@ async def get_access_token(on_auth_url_cb):
         scopes=["profile"],
         auth_flow="USER_FEDERATION",
         agent_identity_token=workload_access_token,
-        callback_url="https://9svcav6rs3.execute-api.us-east-1.amazonaws.com",
+        callback_url=callback_url,
         on_auth_url=on_auth_url_cb,
         force_authentication=False
     )
@@ -67,11 +76,17 @@ async def get_access_token(on_auth_url_cb):
     # print(response)
     return access_token
 
-async def complete_auth(session_id):
-    print(f"> complete_auth session_id={session_id}")
-    identity_client.complete_resource_token_auth(
+async def complete_auth(payload):
+    print(f"> complete_auth")
+    session_id = payload.get("session_id")
+    user_id = payload.get("user_id", DEFAULT_TEST_USER_ID)
+    print(f"| session_id={session_id}")
+    print(f"| user_id={user_id}")
+
+    await identity_client.complete_resource_token_auth(
         session_uri=session_id,
-        user_identifier=UserIdIdentifier(user_id=USER_ID)
+        user_identifier=UserIdIdentifier(user_id=user_id)
     )
+    
     print(f"| session completed")
     return {"status":"ok"}

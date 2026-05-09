@@ -61,17 +61,15 @@ run-agent-locally:
 		CREDENTIAL_PROVIDER_NAME="$(CREDENTIAL_PROVIDER_NAME)" \
 		uv run agent.py
 
-# prep-dashboard:
-# 	@echo "> Prepping Dashboard..."
-# 	$(eval AGENT_RUNTIME_URL := $(shell cat ./tmp/agent_runtime_url.txt))
-# 	$(eval AGENT_RUNTIME_ARN := $(shell cat ./tmp/agent_runtime_arn.txt))
-# 	$(info > AGENT_RUNTIME_URL=$(AGENT_RUNTIME_URL))
-# 	$(info > AGENT_RUNTIME_ARN=$(AGENT_RUNTIME_ARN))
+start-dashboard:
+	@echo "> Start Dashboard..."
+	$(eval AGENT_RUNTIME_ARN := $(shell cat ./tmp/agent_runtime_arn.txt))
+	$(info > AGENT_RUNTIME_ARN=$(AGENT_RUNTIME_ARN))
 
-# 	@rm -f ./dashboard/.env
-# 	@echo "AGENT_RUNTIME_ARN=$(AGENT_RUNTIME_ARN)" >> ./dashboard/.env
+	@rm -f ./dashboard/.env
+	@echo "AGENT_RUNTIME_ARN=$(AGENT_RUNTIME_ARN)" >> ./dashboard/.env
+	@echo "> ./dashboard/.env updated"
 
-# 	@echo "> ./dashboard/.env updated"
-
-	
+	cd dashboard && uv sync
+	cd dashboard && uv run dashboard.py
 

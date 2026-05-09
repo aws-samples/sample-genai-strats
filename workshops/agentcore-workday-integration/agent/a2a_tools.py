@@ -14,38 +14,40 @@ agent_card = AgentCard.model_validate(agent_card_json)
 print(f"agent_card.name={agent_card.name}")
 print(f"agent_card.url={agent_card.url}")
 
-@tool
-async def send_message_to_workday(prompt: str):
-    """
-    This tool servers to address all queries about HR topics
-    """
-    print(f"> send_message_to_workday prompt={prompt}")
-    access_token = await identity_helper.get_access_token(None)
-    print(f"| access_token={access_token[:10]}...REDACTED...")
+def build_tools(user_id: str):
 
-    async with httpx.AsyncClient(
-        headers={"Authorization": f"Bearer {access_token}"},
-        timeout=60.0,
-    ) as httpx_client:
-        config = ClientConfig(httpx_client=httpx_client, streaming=False)
-        client = ClientFactory(config).create(agent_card)
+    @tool
+    async def send_message_to_workday(prompt: str):
+        """
+        This tool servers to address all queries about HR topics
+        """
+        print(f"> send_message_to_workday prompt={prompt} user_id={user_id}")
+        access_token = await identity_helper.get_access_token(None, None, user_id)
+        print(f"| access_token={access_token[:10]}...REDACTED...")
 
-        message = create_text_message_object(content=prompt)
+        async with httpx.AsyncClient(
+            headers={"Authorization": f"Bearer {access_token}"},
+            timeout=60.0,
+        ) as httpx_client:
+            config = ClientConfig(httpx_client=httpx_client, streaming=False)
+            client = ClientFactory(config).create(agent_card)
 
-        print("-" * 20)
-        print("Waiting for response...")
-        
-        parts = []
-        async for event in client.send_message(message):
-            task, _ = event
-            for artifact in task.artifacts or []:
-                for part in artifact.parts or []:
-                    text = part.root.text if hasattr(part.root, "text") else str(part.root)
-                    print(f"| response={text}")
-                    parts.append(text)
+            message = create_text_message_object(content=prompt)
+
+            print("-" * 20)
+            print("Waiting for response...")
+
+            parts = []
+            async for event in client.send_message(message):
+                task, _ = event
+                for artifact in task.artifacts or []:
+                    for part in artifact.parts or []:
+                        text = part.root.text if hasattr(part.root, "text") else str(part.root)
+                        print(f"| response={text}")
+                        parts.append(text)
 
         return "\n".join(parts)
 
-a2a_tools = [send_message_to_workday]
+    return [send_message_to_workday]
 
 
