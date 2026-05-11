@@ -50,6 +50,10 @@ app.post("/app/api/chat", async (req, res) => {
   }
 });
 
+const WORKSHOP_APP_CLOUDFRONT_DOMAIN = process.env.WORKSHOP_APP_CLOUDFRONT_DOMAIN;
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`> dashboard2 listening on http://0.0.0.0:${PORT}/app`);
+  console.log(`> dashboard listening on http://0.0.0.0:${PORT}/app`);
+  if (WORKSHOP_APP_CLOUDFRONT_DOMAIN){
+    console.log(`> dashboard listening on https://${WORKSHOP_APP_CLOUDFRONT_DOMAIN}/app`);
+  }
 });
