@@ -37,11 +37,6 @@ resource "aws_iam_role_policy" "agent" {
           "bedrock-agentcore:CompleteResourceTokenAuth",
           "secretsmanager:GetSecretValue",
 
-          # To pull images from ECR
-          "ecr:GetAuthorizationToken",
-          "ecr:BatchGetImage",
-          "ecr:GetDownloadUrlForLayer",
-
           # To send telemetry to CloudWatch
           "logs:CreateLogGroup",
           "logs:CreateLogStream",

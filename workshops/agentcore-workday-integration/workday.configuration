@@ -11,5 +11,5 @@ INTEGRATION_CLIENT_REDIRECT_URI=https://9svcav6rs3.execute-api.us-east-1.amazona
 
 # Copy these values from Workday
 AGENT_CLIENT_ID=
-AGENT_CLIENT_SECRET
+AGENT_CLIENT_SECRET=
 
