@@ -67,12 +67,14 @@ start-dashboard:
 	$(info > AGENT_RUNTIME_ARN=$(AGENT_RUNTIME_ARN))
 
 	@rm -f ./dashboard/.env
-	@echo "AGENT_RUNTIME_ARN=$(AGENT_RUNTIME_ARN)" >> ./dashboard/.env
-	@echo "> ./dashboard/.env updated"
 
-	# cd dashboard-js && npm install
-	# cd dashboard-js && node server.js
+	@echo "AGENT_RUNTIME_ARN=$(AGENT_RUNTIME_ARN)" >> ./dashboard-js/.env
+	@echo "AGENT_RUNTIME_ARN=$(AGENT_RUNTIME_ARN)" >> ./dashboard-gradio/.env
+	@echo "> .env updated"
+	
+	cd dashboard-js && npm install
+	cd dashboard-js && node server.js
 
-	cd dashboard-gradio && uv sync
-	cd dashboard-gradio && uv run dashboard.py
+# 	cd dashboard-gradio && uv sync
+# 	cd dashboard-gradio && uv run dashboard.py
 
