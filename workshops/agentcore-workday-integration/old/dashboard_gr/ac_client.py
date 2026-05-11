@@ -10,9 +10,16 @@ l = logging.getLogger("aws.agentcore_client")
 ac_client = boto3.client("bedrock-agentcore")
 
 AGENT_RUNTIME_ARN = os.getenv("AGENT_RUNTIME_ARN")
+
+if not AGENT_RUNTIME_ARN:
+    print("ERROR: AGENT_RUNTIME_ARN environment variable is not set")
+    raise SystemExit(1)
+
 SESSION_ID=str(uuid.uuid4())
 l.info(f"AGENT_RUNTIME_ARN={AGENT_RUNTIME_ARN}")
 l.info(f"SESSION_ID={SESSION_ID}")
+
+
 
 def invoke_agent(payload):
     l.info("> invoke_agent")

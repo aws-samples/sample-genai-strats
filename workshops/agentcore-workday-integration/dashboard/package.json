@@ -1,0 +1,14 @@
+{
+  "name": "dashboard2",
+  "version": "1.0.0",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-agentcore": "^3.1045.0",
+    "dotenv": "^16.0.0",
+    "express": "^4.19.0"
+  }
+}

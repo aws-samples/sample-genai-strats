@@ -1,0 +1,55 @@
+import "dotenv/config";
+import express from "express";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import callbackRouter from "./callback_router.js";
+import { initAgent, handleMessage } from "./chat_manager.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const PORT = process.env.PORT || 8081;
+
+const app = express();
+
+app.use((req, res, next) => {
+  const host = (req.headers["host"] || "").split(":")[0];
+  const isLocal = ["localhost", "127.0.0.1", "0.0.0.0"].includes(host);
+  req.publicScheme = isLocal ? "http" : "https";
+  next();
+});
+
+app.use(express.json());
+app.use("/app", express.static(join(__dirname, "static")));
+
+app.use(callbackRouter);
+
+app.get("/", (req, res) => res.redirect("/app"));
+app.get("/app", (req, res) => res.sendFile(join(__dirname, "static", "index.html")));
+
+app.post("/app/api/init", async (req, res) => {
+  const callbackUrl = `${req.publicScheme}://${req.headers["host"]}/app/callback`;
+  console.log(`> init callbackUrl=${callbackUrl}`);
+  try {
+    const authUrl = await initAgent(callbackUrl);
+    if (authUrl === null) return res.json({ status: "ok" });
+    return res.json({ auth_url: authUrl });
+  } catch (e) {
+    console.error("init error", e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post("/app/api/chat", async (req, res) => {
+  const { message } = req.body;
+  console.log(`> chat message=${message}`);
+  try {
+    const response = await handleMessage(message);
+    res.json({ response });
+  } catch (e) {
+    console.error("chat error", e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`> dashboard2 listening on http://0.0.0.0:${PORT}/app`);
+});

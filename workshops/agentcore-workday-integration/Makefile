@@ -70,6 +70,6 @@ start-dashboard:
 	@echo "AGENT_RUNTIME_ARN=$(AGENT_RUNTIME_ARN)" >> ./dashboard/.env
 	@echo "> ./dashboard/.env updated"
 
-	cd dashboard && uv sync
-	cd dashboard && uv run dashboard.py
+	cd dashboard && npm install
+	cd dashboard && node server.js
 

@@ -32,3 +32,4 @@ dashboard/.env
 .agentcore.json
 .vscode
 
+node_modules

@@ -1,11 +1,13 @@
-from logging_config import configure_logging
+import dotenv
+dotenv.load_dotenv()
 
+from logging_config import configure_logging
 configure_logging()
 
-import dotenv
 import uvicorn
 import gradio as gr
 from fastapi import FastAPI, Request, HTTPException
+from starlette.middleware.base import BaseHTTPMiddleware
 import logging
 import screen_connecting
 import screen_chat
@@ -13,11 +15,18 @@ import screen_login
 import callback_router
 import chat_manager
 
-dotenv.load_dotenv()
 
 l = logging.getLogger("aws.dashboard")
 
 fastapi_app = FastAPI()
+
+class ForceHTTPSMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        if request.headers.get("x-forwarded-proto") == "https":
+            request.scope["scheme"] = "https"
+        return await call_next(request)
+
+fastapi_app.add_middleware(ForceHTTPSMiddleware)
 fastapi_app.include_router(callback_router.router)
 
 @fastapi_app.get("/")
@@ -25,23 +34,6 @@ async def root():
     from fastapi.responses import RedirectResponse
     return RedirectResponse(url="/app")
 
-FOCUS_JS = """
-() => {
-    const attach = () => {
-        const ta = document.querySelector('[data-testid="textbox"] textarea');
-        if (!ta) return;
-        new MutationObserver(() => {
-            if (!ta.disabled) ta.focus();
-        }).observe(ta, { attributes: true, attributeFilter: ['disabled'] });
-    };
-    const poll = setInterval(() => {
-        if (document.querySelector('[data-testid="textbox"] textarea')) {
-            attach();
-            clearInterval(poll);
-        }
-    }, 200);
-}
-"""
 
 with gr.Blocks() as gradio_app:
     gr.HTML("<style>* { font-size: 1.2rem !important; }</style>")
@@ -51,7 +43,9 @@ with gr.Blocks() as gradio_app:
     login_screen, auth_url_box = screen_login.build()
 
     def on_load(request: gr.Request):
-        callback_url = f"{request.url.scheme}://{request.url.netloc}/app/callback"
+        host = request.headers.get("host", "")
+        scheme = "http" if host.split(":")[0] in {"localhost", "127.0.0.1", "0.0.0.0"} else "https"
+        callback_url = f"{scheme}://{request.url.netloc}/app/callback"
         auth_url = chat_manager.init_agent(callback_url=callback_url)
         if auth_url is None:
             return (
@@ -66,7 +60,6 @@ with gr.Blocks() as gradio_app:
     gradio_app.load(
         on_load, 
         outputs=[connecting_screen, chat_screen, login_screen, auth_url_box],
-        js=FOCUS_JS
     )
 
 gr.mount_gradio_app(fastapi_app, gradio_app, path="/app")
@@ -78,4 +71,6 @@ if __name__ == "__main__":
         port=8081,
         reload=True,
         timeout_graceful_shutdown=1,
+        proxy_headers=True, 
+        forwarded_allow_ips="*"
     )

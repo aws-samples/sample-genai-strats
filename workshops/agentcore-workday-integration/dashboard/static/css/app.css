@@ -1,0 +1,46 @@
+body {
+  font-size: 1.1rem;
+}
+
+#chat-box {
+  height: 65vh;
+  overflow-y: auto;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.msg-user .bubble {
+  background: #0d6efd;
+  color: #fff;
+  display: inline-block;
+  padding: .5rem 1rem;
+  border-radius: 18px 18px 4px 18px;
+  max-width: 75%;
+}
+
+.msg-bot .bubble {
+  background: #fff;
+  border: 1px solid #dee2e6;
+  display: inline-block;
+  padding: .5rem 1rem;
+  border-radius: 18px 18px 18px 4px;
+  max-width: 75%;
+}
+
+.msg-bot img, .msg-user img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, .85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
