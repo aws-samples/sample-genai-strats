@@ -83,7 +83,7 @@ async def complete_auth(payload):
     print(f"| session_id={session_id}")
     print(f"| user_id={user_id}")
 
-    await identity_client.complete_resource_token_auth(
+    identity_client.complete_resource_token_auth(
         session_uri=session_id,
         user_identifier=UserIdIdentifier(user_id=user_id)
     )
