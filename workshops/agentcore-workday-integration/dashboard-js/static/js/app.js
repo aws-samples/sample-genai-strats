@@ -3,7 +3,7 @@ const BOT_AVATAR  = "https://cdn-icons-png.flaticon.com/512/4712/4712042.png";
 const EXAMPLES = [
   "How can you help me?",
   "What's my PTO balance?",
-  "Which department am in?",
+  "Which department am I in?",
   "What's my employment start date?"
 ];
 
