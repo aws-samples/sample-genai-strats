@@ -35,10 +35,17 @@ The workshop constists of three major steps, each one implements activities perf
 ---
 ## Prerequisites
 
-You need a Workday tenant with Agent System of Record (ASOR) capabilities and Self-service Agent enabled. Refer to the Workday documentation for details. You will need the following items
+1. You will need the following tools installed on your system:
+- AWS CLI configured with credentials
+- Visual Studio Code
+- Python 3.13
+- Terraform
+- Nodejs 22+
+- git, jq, uv, make
 
-- An API Client registered with Workday. You will need properties like client_id, client_secret, authorization URL, and token URL.
-- An API Client for Agents registered with Workday. You will need properties like client_id and client_secret. 
+2. You need a Workday tenant with Agent System of Record (ASOR) capabilities and Self-service Agent enabled. Refer to the Workday documentation for details. You will need the following items:
+    - An API Client registered with Workday. You will need properties like client_id, client_secret, authorization URL, and token URL.
+    - An API Client for Agents registered with Workday. You will need properties like client_id and client_secret. 
 
 Once you have the above information, proceed with cloning the workshop from Github:
 
