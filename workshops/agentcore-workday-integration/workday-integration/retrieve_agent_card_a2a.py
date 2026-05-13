@@ -15,12 +15,12 @@ def retrieve_agent_card():
     print("-" * 20)
     print("Retrieving Agent Card (via a2a)")
     AGENT_CARD_URL = os.getenv("AGENT_CARD_URL")
-    ACCESS_TOKEN_PATH = Path("./../tmp/integration_client_access_token.txt")
+    ACCESS_TOKEN_PATH = Path("./../tmp/api_client_access_token.txt")
     access_token = ACCESS_TOKEN_PATH.read_text()
     AGENT_CARD_PATH = Path("./../tmp/agent_card.json")
 
     if not ACCESS_TOKEN_PATH.exists():
-        print("ERROR: Integration client access token not found.")
+        print("ERROR: API Client access token not found.")
         exit(1)
 
     print(f"| AGENT_CARD_URL={AGENT_CARD_URL}")

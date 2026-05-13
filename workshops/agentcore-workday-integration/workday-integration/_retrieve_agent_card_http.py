@@ -7,7 +7,7 @@ import json
 dotenv.load_dotenv()
 
 AGENT_CARD_URL = os.getenv("AGENT_CARD_URL")
-ACCESS_TOKEN_PATH = Path("./../tmp/integration_client_access_token.txt")
+ACCESS_TOKEN_PATH = Path("./../tmp/api_client_access_token.txt")
 AGENT_CARD_PATH = Path("./../tmp/agent_card.json")
 
 print("-" * 20)
@@ -15,7 +15,7 @@ print(f"Retrieving Agent Card")
 print(f"| AGENT_CARD_URL={AGENT_CARD_URL}")
 
 if not ACCESS_TOKEN_PATH.exists():
-    print("ERROR: Integration client access token not found. Run start-integration-client-authz first.")
+    print("ERROR: API client access token not found. Run start-api-client-authz first.")
     exit(1)
 
 access_token = ACCESS_TOKEN_PATH.read_text()

@@ -14,6 +14,8 @@ agent_card = AgentCard.model_validate(agent_card_json)
 print(f"agent_card.name={agent_card.name}")
 print(f"agent_card.url={agent_card.url}")
 
+_context_ids: dict[str, str] = {}
+
 def build_tools(user_id: str):
 
     @tool
@@ -21,7 +23,8 @@ def build_tools(user_id: str):
         """
         This tool servers to address all queries about HR topics
         """
-        print(f"> send_message_to_workday prompt={prompt} user_id={user_id}")
+        print(f"> send_message_to_workday user_id={user_id} prompt={prompt} ")
+        
         access_token = await identity_helper.get_access_token(None, None, user_id)
         print(f"| access_token={access_token[:10]}...REDACTED...")
 
@@ -34,20 +37,37 @@ def build_tools(user_id: str):
 
             message = create_text_message_object(content=prompt)
 
+            if user_id in _context_ids:
+                message.context_id = _context_ids[user_id]
+                print(f"| injected context_id={message.context_id}")
+
             print("-" * 20)
-            print("Waiting for response...")
+            print("Waiting for A2A response...")
 
-            parts = []
-            async for event in client.send_message(message):
-                task, _ = event
-                for artifact in task.artifacts or []:
-                    for part in artifact.parts or []:
-                        text = part.root.text if hasattr(part.root, "text") else str(part.root)
-                        print(f"| response={text}")
-                        parts.append(text)
+            try:
+                resp = await _collect_response(client, message, user_id)
+                print(f"| send_message success")
+            except Exception as e:
+                print(f"| send_message error: {type(e).__name__}: {e}")
+                raise
 
-        return "\n".join(parts)
+        return resp
 
     return [send_message_to_workday]
 
+async def _collect_response(client, message, user_id: str) -> str:
+    parts = []
+    async for event in client.send_message(message):
+        task, _ = event
+
+        if task.context_id:
+            _context_ids[user_id] = task.context_id
+            print(f"| stored context_id={task.context_id}")
+
+        for artifact in task.artifacts or []:
+            for part in artifact.parts or []:
+                text = part.root.text if hasattr(part.root, "text") else str(part.root)
+                print(f"| resp.part.text={text}")
+                parts.append(text)
+    return "\n".join(parts)
 

@@ -1,4 +1,5 @@
 from bedrock_agentcore.runtime import BedrockAgentCoreApp
+from strands.session.file_session_manager import FileSessionManager
 from strands import Agent
 from strands.models import BedrockModel
 from system_prompt import SYSTEM_PROMPT
@@ -12,16 +13,18 @@ model = BedrockModel(model_id="us.anthropic.claude-haiku-4-5-20251001-v1:0", tem
 async def process_prompt(payload):
     print(f"> process_prompt")
     user_id = payload.get("user_id", DEFAULT_TEST_USER_ID)
+    prompt = payload.get("prompt")
     print(f"| user_id={user_id}")
-    
+    print(f"| payload={payload}")
+
+    session_manager = FileSessionManager(session_id=user_id)
+
     agent = Agent(
         model=model,
         system_prompt=SYSTEM_PROMPT,
+        session_manager=session_manager,
         tools=build_tools(user_id),
     )
-
-    prompt = payload.get("prompt")
-    print(f"| prompt={prompt}")
 
     response = agent(prompt)
 
@@ -36,6 +39,7 @@ async def app_entrypoint(payload, context):
     cmd = payload.get("cmd")
 
     if cmd == "health":
+        print("> health")
         return {"status":"ok"}
 
     if cmd == "initialize":

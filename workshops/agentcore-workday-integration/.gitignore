@@ -19,10 +19,7 @@ __pycache__/
 
 # Generated files
 agent/agent_card.json
-agent/.env
-workday-integration/.env
-dashboard/.env
-
+.env
 .env_backup
 
 # OS

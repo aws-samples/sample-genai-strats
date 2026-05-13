@@ -30,10 +30,17 @@ async def initialize(payload):
             auth_url_future.set_result(url)
 
     async def run_and_capture_token():
-        token = await get_access_token(
-            on_auth_url_cb=capture_auth_url, 
-            callback_url=callback_url, 
-            user_id=user_id)
+        try:
+            token = await get_access_token(
+                on_auth_url_cb=capture_auth_url,
+                callback_url=callback_url,
+                user_id=user_id)
+        except Exception as e:
+            print(f"| get_access_token error: {type(e).__name__}: {e}")
+            if not token_future.done():
+                token_future.set_exception(e)
+            return
+
         if not token_future.done():
             token_future.set_result(token)
 
@@ -48,9 +55,13 @@ async def initialize(payload):
         print(f"| auth required, returning auth_url to client")
         return {"auth_url": auth_url_future.result()}
 
+    if token_future in done and token_future.exception():
+        e = token_future.exception()
+        print(f"| token_future error: {type(e).__name__}: {e}")
+        return {"error": str(e)}
+
     # token = token_future.result()
     return {"status":"ok"}
-
 
 async def get_access_token(on_auth_url_cb, callback_url, user_id):
     print("> get_access_token")
@@ -88,5 +99,5 @@ async def complete_auth(payload):
         user_identifier=UserIdIdentifier(user_id=user_id)
     )
     
-    print(f"| session completed")
+    print(f"| auth sequence completed")
     return {"status":"ok"}

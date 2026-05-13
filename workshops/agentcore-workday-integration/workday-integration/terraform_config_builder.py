@@ -9,9 +9,9 @@ dotenv.load_dotenv(dotenv_path=config_path)
 
 tmp_path = Path(__file__).parent.parent / "tmp"
 
-# Decode JWT from integration client access token and extract issuer
-print("> Retrieving Issuer from access token")
-access_token = (tmp_path / "integration_client_access_token.txt").read_text().strip()
+# Decode JWT from API client access token and extract issuer
+print("> Retrieving Issuer from API Client access token")
+access_token = (tmp_path / "api_client_access_token.txt").read_text().strip()
 payload_segment = access_token.split(".")[1]
 payload_segment += "=" * (4 - len(payload_segment) % 4)
 jwt_payload = json.loads(base64.urlsafe_b64decode(payload_segment))

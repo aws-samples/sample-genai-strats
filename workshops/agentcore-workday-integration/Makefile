@@ -1,4 +1,4 @@
-# --- Get Agent Card via Workday Integration Client ----
+# --- Get Agent Card via Workday API Client ----
 get-agent-card:
 	cd workday-integration && \
 		uv sync && \

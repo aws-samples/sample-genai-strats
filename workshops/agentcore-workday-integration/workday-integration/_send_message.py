@@ -18,7 +18,7 @@ print("-" * 20)
 print(f"Sending message to agent: {MESSAGE}")
 
 if not ACCESS_TOKEN_PATH.exists():
-    print("ERROR: Integration client access token not found. Run start-integration-client-authz first.")
+    print("ERROR: API client access token not found. Run start-api-client-authz first.")
     exit(1)
 
 if not AGENT_CARD_PATH.exists():
