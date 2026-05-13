@@ -1,13 +1,13 @@
 # Copy these values from Workday
-INTEGRATION_CLIENT_ID=
-INTEGRATION_CLIENT_SECRET=
-INTEGRATION_CLIENT_AUTHZ_ENDPOINT=
-INTEGRATION_CLIENT_TOKEN_ENDPOINT=
+API_CLIENT_ID=
+API_CLIENT_SECRET=
+API_CLIENT_AUTHZ_ENDPOINT=
+API_CLIENT_TOKEN_ENDPOINT=
 
 AGENT_CARD_URL=https://us.agent.workday.com/v1/a2a/{TENANT_ID}/self-service-agent/.well-known/agent-card.json
 
-# Configure Workday's Integration API Client with this Redirect URI
-INTEGRATION_CLIENT_REDIRECT_URI=https://9svcav6rs3.execute-api.us-east-1.amazonaws.com
+# Configure Workday's API API Client with this Redirect URI
+API_CLIENT_REDIRECT_URI=https://9svcav6rs3.execute-api.us-east-1.amazonaws.com
 
 # Copy these values from Workday
 AGENT_CLIENT_ID=
