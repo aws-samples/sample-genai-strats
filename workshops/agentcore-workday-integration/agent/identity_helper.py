@@ -12,6 +12,7 @@ print(f"DEFAULT_TEST_USER_ID={DEFAULT_TEST_USER_ID}")
 
 region = boto3.session.Session().region_name
 identity_client = IdentityClient(region)
+AGENT_MODE = os.environ.get("AGENT_MODE")
 
 async def initialize(payload):
     print("> initialize")
@@ -61,7 +62,7 @@ async def initialize(payload):
         return {"error": str(e)}
 
     # token = token_future.result()
-    return {"status":"ok"}
+    return {"status":"ok", "agent_mode": AGENT_MODE}
 
 async def get_access_token(on_auth_url_cb, callback_url, user_id):
     print("> get_access_token")

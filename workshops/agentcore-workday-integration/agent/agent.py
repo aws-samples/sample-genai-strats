@@ -3,9 +3,18 @@ from strands.session.file_session_manager import FileSessionManager
 from strands import Agent
 from strands.models import BedrockModel
 from system_prompt import SYSTEM_PROMPT
-from a2a_tools import build_tools
 import identity_helper
 from identity_helper import DEFAULT_TEST_USER_ID
+import os
+
+AGENT_MODE = os.environ.get("AGENT_MODE")
+if AGENT_MODE=="A2A":
+    from a2a_tools import build_tools
+elif AGENT_MODE=="MCP":
+    from mcp_tools import build_tools
+else:
+    print(f"Unrecognized AGENT_MODE={AGENT_MODE}. Stopping.")
+    exit(1)
 
 app = BedrockAgentCoreApp()
 model = BedrockModel(model_id="us.anthropic.claude-haiku-4-5-20251001-v1:0", temperature=0.1)

@@ -6,7 +6,7 @@ import json
 import httpx
 import identity_helper
 
-AGENT_CARD = Path("./agent_card.json").read_text()
+AGENT_CARD = Path("./a2a_agent_card.json").read_text()
 agent_card_json = json.loads(AGENT_CARD)
 
 agent_card = AgentCard.model_validate(agent_card_json)
