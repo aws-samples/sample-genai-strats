@@ -1,15 +1,20 @@
 # Copy these values from Workday
+WORKDAY_TENANT_ALIAS=
+
+# Workday API Client configuration 
 API_CLIENT_ID=
 API_CLIENT_SECRET=
 API_CLIENT_AUTHZ_ENDPOINT=
 API_CLIENT_TOKEN_ENDPOINT=
 
-AGENT_CARD_URL=https://us.agent.workday.com/v1/a2a/{TENANT_ID}/self-service-agent/.well-known/agent-card.json
-
-# Configure Workday's API API Client with this Redirect URI
+# DO NOT CHANGE THIS VALUE! 
+# Configure your Workday API Client with this Redirect URI
 API_CLIENT_REDIRECT_URI=https://9svcav6rs3.execute-api.us-east-1.amazonaws.com
 
-# Copy these values from Workday
-AGENT_CLIENT_ID=
-AGENT_CLIENT_SECRET=
+# A2A scenario configuration 
+A2A_AGENT_CARD_URL=https://us.agent.workday.com/v1/a2a/TENANT_ALIAS/self-service-agent/.well-known/agent-card.json
+A2A_AGENT_CLIENT_ID=
+A2A_AGENT_CLIENT_SECRET=
 
+# MCP scenario configuration
+# TBD
