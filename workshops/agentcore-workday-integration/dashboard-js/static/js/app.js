@@ -1,5 +1,5 @@
 const USER_AVATAR = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-const BOT_AVATAR  = "https://cdn-icons-png.flaticon.com/512/4712/4712042.png";
+const BOT_AVATAR  = "images/workday-logo-small.png";
 const EXAMPLES = [
   "How can you help me?",
   "What's my PTO balance?",
@@ -36,6 +36,7 @@ function showChat() {
 $.post("/app/api/init")
   .done(data => {
     if (data.status === "ok") {
+      $("#chat-form button[type=submit]").text(`Send (${data.agent_mode})`);
       showChat();
     } else {
       authUrl = data.auth_url;

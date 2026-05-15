@@ -25,7 +25,7 @@ export async function invokeAgent(payload) {
     runtimeUserId: USER_ID,
   });
   const response = await client.send(cmd);
-  const chunks = [];
-  for await (const chunk of response.response) chunks.push(chunk);
-  return JSON.parse(Buffer.concat(chunks).toString());
+  const responseText = await response.response.transformToString()
+  const responseJson = JSON.parse(responseText);
+  return responseJson;
 }

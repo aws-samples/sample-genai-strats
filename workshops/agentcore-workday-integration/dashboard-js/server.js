@@ -29,12 +29,11 @@ app.post("/app/api/init", async (req, res) => {
   const callbackUrl = `${req.publicScheme}://${req.headers["host"]}/app/callback`;
   console.log(`> init callbackUrl=${callbackUrl}`);
   try {
-    const authUrl = await initAgent(callbackUrl);
-    if (authUrl === null) return res.json({ status: "ok" });
-    return res.json({ auth_url: authUrl });
+    const response = await initAgent(callbackUrl);
+    return res.json(response);
   } catch (e) {
     console.error("init error", e);
-    res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: e.message });
   }
 });
 
@@ -43,10 +42,10 @@ app.post("/app/api/chat", async (req, res) => {
   console.log(`> chat message=${message}`);
   try {
     const response = await handleMessage(message);
-    res.json({ response });
+    return res.json({ response });
   } catch (e) {
     console.error("chat error", e);
-    res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: e.message });
   }
 });
 

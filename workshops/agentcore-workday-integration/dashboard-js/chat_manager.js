@@ -4,8 +4,7 @@ export async function initAgent(callbackUrl) {
   console.log(`> initAgent callbackUrl=${callbackUrl}`);
   const response = await invokeAgent({ cmd: "initialize", callback_url: callbackUrl });
   console.log(`> initAgent response=${JSON.stringify(response)}`);
-  if (response.status === "ok") return null;
-  return response.auth_url;
+  return response;
 }
 
 export async function handleMessage(message) {
