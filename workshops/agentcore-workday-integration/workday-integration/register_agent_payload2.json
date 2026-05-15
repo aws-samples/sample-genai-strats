@@ -1,0 +1,97 @@
+{
+  "name": "Custom HR Agent running on AgentCore",
+  "description": "Custom HR Agent running on AgentCore — DevCon 2026.",
+  "provider": { "id": "Provider=SELF-BUILT" },
+  "platform": { "id": "Platform=OTHER" },
+  "url": "https://agent.workday.com",
+  "skills": [
+    {
+      "id": "skill1",
+      "name": "Skill 1: Inventory tools, active workers, open job postings",
+      "description": "Connect to Workday MCP, inventory tools, count active workers and open job postings.",
+      "inputModes": [{ "type": "application/json" }],
+      "outputModes": [{ "type": "application/json" }]
+    },
+    {
+      "id": "skill2",
+      "name": "Skill 2: Supervisory org lookups, member roaster, service dates",
+      "description": "LLM chains supervisory org lookup -> member roster -> service dates.",
+      "inputModes": [{ "type": "application/json" }],
+      "outputModes": [{ "type": "application/json" }]
+    },
+    {
+      "id": "skill3",
+      "name": "Skill 3: Succession plan lookup, candidate check, write to Workday",
+      "description": "LLM chains succession plan lookup → candidate check → write to Workday.",
+      "inputModes": [{ "type": "application/json" }],
+      "outputModes": [{ "type": "application/json" }]
+    }
+  ],
+  "workdayConfig": [
+    {
+      "skillId": "skill1",
+      "executionMode": { "id": "Mode=Delegate" },
+      "workdayResources": [
+        {
+          "description": "Get Workers (staffing/workers/view)",
+          "tool_name": "getWorkers",
+          "agent_resource": { "id": "c2466b0778c610000cdf9abc4fbc000c" }
+        },
+        {
+          "description": "Get Job Postings - open positions (recruiting/jobPostings/view)",
+          "tool_name": "getJobPostings",
+          "agent_resource": { "id": "5597c990f22e10000fc4975e37560022" }
+        }
+      ]
+    },
+    {
+      "skillId": "skill2",
+      "executionMode": { "id": "Mode=Delegate" },
+      "workdayResources": [
+        {
+          "description": "Get Supervisory Organizations (staffing/supervisoryOrganizations/view)",
+          "tool_name": "getSupervisoryOrganizations",
+          "agent_resource": { "id": "a02c2e1916fa100009e1ee01295d001d" }
+        },
+        {
+          "description": "Get Supervisory Organization Members (staffing/supervisoryOrganizations/members/view)",
+          "tool_name": "getSupervisoryOrganizationMembers",
+          "agent_resource": { "id": "ad3e317e08f810000ebaef7a87a5003b" }
+        },
+        {
+          "description": "Get Worker Service Dates (staffing/workers/serviceDates/view)",
+          "tool_name": "getWorkerServiceDates",
+          "agent_resource": { "id": "6b1db753fd82100027d4d4b0f2cd001f" }
+        }
+      ]
+    },
+    {
+      "skillId": "skill3",
+      "executionMode": { "id": "Mode=Delegate" },
+      "workdayResources": [
+        {
+          "description": "Get Succession Plans talentManagement/successionPlans/view",
+          "tool_name": "getSuccessionPlans",
+          "agent_resource": { "id": "7e3bb9fc9368100020e63f4bc4f60000" }
+        },
+        {
+          "description": "Get Succession Plan Candidates talentManagement/successionPlanEvents/candidates/view",
+          "tool_name": "getSuccessionPlanCandidates",
+          "agent_resource": { "id": "1cfdaf8784fb10002824820310d50000" }
+        },
+        {
+          "description": "Create Worker External Skill Level - staffing/workers/externalSkillLevel/create",
+          "tool_name": "createWorkerExternalSkillLevel",
+          "agent_resource": { "id": "69d975e384d710000a679d7080170002" }
+        }
+      ]
+    }
+  ],
+  "capabilities": {
+    "stateTransitionHistory": false,
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "supportsAuthenticatedExtendedCard": false,
+  "version": "v1"
+}

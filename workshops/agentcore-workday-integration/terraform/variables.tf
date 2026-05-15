@@ -1,3 +1,4 @@
+variable "wd_agent_mode" {}
 variable "wd_agent_client_id" {}
 variable "wd_agent_client_secret" {}
 variable "wd_agent_client_issuer" {}

@@ -60,7 +60,7 @@ resource "aws_bedrockagentcore_agent_runtime" "agent" {
   agent_runtime_artifact {
     code_configuration {
       entry_point = ["agent.py"]
-      runtime = "PYTHON_3_13"
+      runtime     = "PYTHON_3_13"
       code {
         s3 {
           bucket = aws_s3_object.agent_zip.bucket
@@ -75,9 +75,10 @@ resource "aws_bedrockagentcore_agent_runtime" "agent" {
   }
 
   environment_variables = {
-    WORKLOAD_IDENTITY_NAME=aws_bedrockagentcore_workload_identity.hr_agent.name
-    CREDENTIAL_PROVIDER_NAME=aws_bedrockagentcore_oauth2_credential_provider.workday_agent_client.name
-    AGENT_ZIP_ETAG=filemd5("${path.root}/../tmp/agent_package/agent.zip")
+    WORKLOAD_IDENTITY_NAME   = aws_bedrockagentcore_workload_identity.hr_agent.name
+    CREDENTIAL_PROVIDER_NAME = aws_bedrockagentcore_oauth2_credential_provider.workday_agent_client.name
+    AGENT_ZIP_ETAG           = filemd5("${path.root}/../tmp/agent_package/agent.zip")
+    AGENT_MODE               = var.wd_agent_mode
   }
 }
 
@@ -92,11 +93,11 @@ resource "local_file" "agent_runtime_url" {
 }
 
 resource "local_file" "agent_runtime_arn" {
-  content = aws_bedrockagentcore_agent_runtime.agent.agent_runtime_arn
+  content  = aws_bedrockagentcore_agent_runtime.agent.agent_runtime_arn
   filename = "${path.root}/../tmp/agent_runtime_arn.txt"
 }
 
 resource "local_file" "agent_runtime_arn_encoded" {
-  content = local.agent_runtime_arn_encoded
+  content  = local.agent_runtime_arn_encoded
   filename = "${path.root}/../tmp/agent_runtime_arn_encoded.txt"
 }

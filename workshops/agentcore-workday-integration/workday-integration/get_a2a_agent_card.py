@@ -11,23 +11,25 @@ dotenv.load_dotenv(
     dotenv_path=Path("./../workday.configuration")
 )
 
-def retrieve_agent_card():
+def get_agent_card():
     print("-" * 20)
     print("Retrieving Agent Card (via a2a)")
-    AGENT_CARD_URL = os.getenv("AGENT_CARD_URL")
+    WORKDAY_TENANT_ALIAS = os.getenv("WORKDAY_TENANT_ALIAS")
+    A2A_AGENT_CARD_URL = os.getenv("A2A_AGENT_CARD_URL").replace("TENANT_ALIAS", WORKDAY_TENANT_ALIAS)
     ACCESS_TOKEN_PATH = Path("./../tmp/api_client_access_token.txt")
     access_token = ACCESS_TOKEN_PATH.read_text()
-    AGENT_CARD_PATH = Path("./../tmp/agent_card.json")
+    A2A_AGENT_CARD_PATH = Path("./../tmp/a2a_agent_card.json")
 
     if not ACCESS_TOKEN_PATH.exists():
         print("ERROR: API Client access token not found.")
         exit(1)
 
-    print(f"| AGENT_CARD_URL={AGENT_CARD_URL}")
+    print(f"| WORKDAY_TENANT_ALIAS={WORKDAY_TENANT_ALIAS}")
+    print(f"| A2A_AGENT_CARD_URL={A2A_AGENT_CARD_URL}")
     print(f"| access_token={access_token[:10]}...REDACTED...")
 
     # Derive base_url and relative card path from the full AGENT_CARD_URL
-    agent_card_url_parsed = urlparse(AGENT_CARD_URL)
+    agent_card_url_parsed = urlparse(A2A_AGENT_CARD_URL)
     agent_card_base_url = f"{agent_card_url_parsed.scheme}://{agent_card_url_parsed.netloc}"
     agent_card_path = agent_card_url_parsed.path
  
@@ -37,13 +39,13 @@ def retrieve_agent_card():
     agent_card = asyncio.run(_get_card(access_token, agent_card_base_url, agent_card_path))
 
     print("-" * 20)
-    print("Agent card retrieved")
+    print("A2A agent card retrieved")
     print(f"| name={agent_card.name}")
     print(f"| url={agent_card.url}")
 
     os.makedirs("./../tmp", exist_ok=True)
-    AGENT_CARD_PATH.write_text(json.dumps(agent_card.model_dump(), indent=4))
-    print(f"| Agent card saved to {AGENT_CARD_PATH}")
+    A2A_AGENT_CARD_PATH.write_text(json.dumps(agent_card.model_dump(), indent=4))
+    print(f"| Agent card saved to {A2A_AGENT_CARD_PATH}")
 
 async def _get_card(access_token, card_base_url, card_path):
     async with httpx.AsyncClient(
@@ -54,3 +56,5 @@ async def _get_card(access_token, card_base_url, card_path):
         agent_card = await resolver.get_agent_card(relative_card_path=card_path)
         return agent_card
 
+if __name__=="__main__":
+    get_agent_card()
