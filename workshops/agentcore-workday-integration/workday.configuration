@@ -7,13 +7,13 @@ AGENT_MCP_CLIENT_SECRET=
 AGENT_MCP_AUTHORIZATION_ENDPOINT=
 AGENT_MCP_TOKEN_ENDPOINT=
 
-# Module 2 - MCP
+# Module 2 - MCP - DO NOT CHANGE THE VALUES OF THESE PROPERTIES UNLESS INSTRUCTED
 AGENT_MCP_REDIRECT_URL=https://9svcav6rs3.execute-api.us-east-1.amazonaws.com/
 AGENT_MCP_ENDPOINT=https://api.eu.wcp.workday.com/robotgw/coremcp
 
 # --- Module 3 A2A
 # A2A scenario configuration 
-#A2A_AGENT_CARD_URL=https://eu.agent.workday.com/v1/a2a/TENANT_ALIAS/self-service-agent/.well-known/agent-card.json
 #A2A_AGENT_CLIENT_ID=
 #A2A_AGENT_CLIENT_SECRET=
 #A2A_AGENT_TOKEN_ISSUER=
+#A2A_AGENT_CARD_URL=https://eu.agent.workday.com/v1/a2a/TENANT_ALIAS/self-service-agent/.well-known/agent-card.json
