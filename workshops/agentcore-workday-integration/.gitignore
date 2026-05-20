@@ -18,7 +18,6 @@ __pycache__/
 .terraform.lock.hcl
 
 # Generated files
-agent/agent_card.json
 .env
 .env_backup
 
