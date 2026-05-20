@@ -2,22 +2,27 @@ from bedrock_agentcore.runtime import BedrockAgentCoreApp
 from strands.session.file_session_manager import FileSessionManager
 from strands import Agent
 from strands.models import BedrockModel
-from system_prompt import SYSTEM_PROMPT
 import identity_helper
 from identity_helper import DEFAULT_TEST_USER_ID
 import os
 
+print(">Starting agent...")
+
 AGENT_MODE = os.environ.get("AGENT_MODE")
-if AGENT_MODE=="A2A":
+if AGENT_MODE=="a2a":
+    from system_prompt_a2a import SYSTEM_PROMPT
     from a2a_tools import build_tools
-elif AGENT_MODE=="MCP":
+elif AGENT_MODE=="mcp":
+    from system_prompt_mcp import SYSTEM_PROMPT
     from mcp_tools import build_tools
 else:
     print(f"Unrecognized AGENT_MODE={AGENT_MODE}. Stopping.")
     exit(1)
 
+print(f"Starting with AGENT_MODE={AGENT_MODE}")
+
 app = BedrockAgentCoreApp()
-model = BedrockModel(model_id="us.anthropic.claude-haiku-4-5-20251001-v1:0", temperature=0.1)
+model = BedrockModel(model_id="us.anthropic.claude-sonnet-4-6")
 
 async def process_prompt(payload):
     print(f"> process_prompt")
@@ -27,12 +32,13 @@ async def process_prompt(payload):
     print(f"| payload={payload}")
 
     session_manager = FileSessionManager(session_id=user_id)
+    tools = await build_tools(user_id)
 
     agent = Agent(
         model=model,
         system_prompt=SYSTEM_PROMPT,
         session_manager=session_manager,
-        tools=build_tools(user_id),
+        tools=tools,
     )
 
     response = agent(prompt)
@@ -65,5 +71,4 @@ async def app_entrypoint(payload, context):
     }
     
 if __name__ == "__main__":
-    print("> main")
     app.run(host="0.0.0.0", port="8080")

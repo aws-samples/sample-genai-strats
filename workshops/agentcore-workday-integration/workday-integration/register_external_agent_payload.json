@@ -1,9 +1,9 @@
 {
-  "name": "Custom HR Agent running on AgentCore",
-  "description": "Custom HR Agent running on AgentCore — DevCon 2026.",
+  "name": "AWSome HR Agent",
+  "description": "External HR Agent running on Amazon Bedrock AgentCore",
   "provider": { "id": "Provider=SELF-BUILT" },
-  "platform": { "id": "Platform=OTHER" },
-  "url": "https://agent.workday.com",
+  "platform": { "id": "Platform=AMAZON_BEDROCK_AGENTCORE" },
+  "url": "https://aws.amazon.com",
   "skills": [
     {
       "id": "skill1",

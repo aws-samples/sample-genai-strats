@@ -52,7 +52,6 @@ resource "aws_iam_role_policy" "agent" {
   })
 }
 
-
 resource "aws_bedrockagentcore_agent_runtime" "agent" {
   agent_runtime_name = "${local.project_name_underscore}_agent"
   role_arn           = aws_iam_role.agent.arn
@@ -76,9 +75,11 @@ resource "aws_bedrockagentcore_agent_runtime" "agent" {
 
   environment_variables = {
     WORKLOAD_IDENTITY_NAME   = aws_bedrockagentcore_workload_identity.hr_agent.name
-    CREDENTIAL_PROVIDER_NAME = aws_bedrockagentcore_oauth2_credential_provider.workday_agent_client.name
+    CREDENTIAL_PROVIDER_NAME = aws_bedrockagentcore_oauth2_credential_provider.workday_agent.name
     AGENT_ZIP_ETAG           = filemd5("${path.root}/../tmp/agent_package/agent.zip")
     AGENT_MODE               = var.wd_agent_mode
+    ACCESS_TOKEN             = var.wd_agent_access_token
+    MCP_ENDPOINT             = var.wd_agent_mcp_endpoint
   }
 }
 

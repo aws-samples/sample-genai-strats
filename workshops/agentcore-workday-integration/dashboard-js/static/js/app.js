@@ -1,11 +1,19 @@
 const USER_AVATAR = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 const BOT_AVATAR  = "images/workday-logo-small.png";
-const EXAMPLES = [
-  "How can you help me?",
-  "What's my PTO balance?",
-  "Which department am I in?",
-  "What's my employment start date?"
-];
+const EXAMPLES = {
+  mcp: [
+    "How can you help me?",
+    "How many workers are in the system?",
+    "What positions are currently open?",
+    "Check Logan McNeil’s succession plan"
+  ],
+  a2a: [
+    "How can you help me?",
+    "What's my PTO balance?",
+    "Which department am I in?",
+    "What's my employment start date?"
+  ]
+};
 
 let authUrl = null;
 
@@ -24,9 +32,10 @@ function appendMsg(role, text) {
   $("#chat-box").append(html).scrollTop(1e9);
 }
 
-function showChat() {
+function showChat(agentMode) {
   $("#overlay").hide();
-  EXAMPLES.forEach(ex => {
+  const examples = EXAMPLES[agentMode] || EXAMPLES.a2a;
+  examples.forEach(ex => {
     $("#examples").append(`<button class="btn btn-sm btn-outline-secondary example-btn">${ex}</button>`);
   });
   $("#chat-input").focus();
@@ -37,7 +46,7 @@ $.post("/app/api/init")
   .done(data => {
     if (data.status === "ok") {
       $("#chat-form button[type=submit]").text(`Send (${data.agent_mode})`);
-      showChat();
+      showChat(data.agent_mode);
     } else {
       authUrl = data.auth_url;
       $("#ov-connecting").hide();
@@ -76,7 +85,9 @@ $("#chat-form").on("submit", function (e) {
     dataType: "json"
   })
     .done(data => {
-      $("#chat-box .msg-bot:last .bubble").text(data.response || "Error. Try again.");
+      const text = data.response || "Error. Try again.";
+      const html = $("<div>").text(text).html().replace(/\n/g, "<br>");
+      $("#chat-box .msg-bot:last .bubble").html(html);
     })
     .fail(() => {
       $("#chat-box .msg-bot:last .bubble").text("Error communicating with agent. Try again.");

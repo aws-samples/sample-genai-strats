@@ -1,5 +1,5 @@
-resource "aws_bedrockagentcore_oauth2_credential_provider" "workday_agent_client" {
-  name                       = "${local.project_name}-workday-agent-client"
+resource "aws_bedrockagentcore_oauth2_credential_provider" "workday_agent" {
+  name                       = "${local.project_name}-workday-agent"
   credential_provider_vendor = "CustomOauth2"
   oauth2_provider_config {
     custom_oauth2_provider_config {
@@ -17,28 +17,29 @@ resource "aws_bedrockagentcore_oauth2_credential_provider" "workday_agent_client
   }
 }
 
-data "external" "agent_client_credential_provider_callback_url" {
-  depends_on = [aws_bedrockagentcore_oauth2_credential_provider.workday_agent_client]
+data "external" "credential_provider_callback_url" {
+  depends_on = [aws_bedrockagentcore_oauth2_credential_provider.workday_agent]
 
   program = ["bash", "-c",
-    "aws bedrock-agentcore-control get-oauth2-credential-provider --name '${aws_bedrockagentcore_oauth2_credential_provider.workday_agent_client.name}' --query 'callbackUrl' --output text | jq -R '{callback_url: .}'"
+    "aws bedrock-agentcore-control get-oauth2-credential-provider --name '${aws_bedrockagentcore_oauth2_credential_provider.workday_agent.name}' --query 'callbackUrl' --output text | jq -R '{callback_url: .}'"
   ]
 }
 
-output "agent_client_credential_provider_callback_url" {
-  value = data.external.agent_client_credential_provider_callback_url.result["callback_url"]
+output "credential_provider_callback_url" {
+  value = data.external.credential_provider_callback_url.result["callback_url"]
 }
 
-# output "agent_client_credential_provider_name" {
-#   value = aws_bedrockagentcore_oauth2_credential_provider.workday_agent_client.name
-# }
+# # output "agent_client_credential_provider_name" {
+# #   value = aws_bedrockagentcore_oauth2_credential_provider.workday_agent_client.name
+# # }
 
-resource "local_file" "agent_client_credential_provider_callback_url" {
-    filename = "${path.root}/../tmp/agent_client_credential_provider_callback_url.txt"
-    content = data.external.agent_client_credential_provider_callback_url.result["callback_url"]
+resource "local_file" "credential_provider_callback_url" {
+    filename = "${path.root}/../tmp/credential_provider_callback_url.txt"
+    content = data.external.credential_provider_callback_url.result["callback_url"]
 }
 
-resource "local_file" "agent_client_credential_provider_name" {
-    filename = "${path.root}/../tmp/agent_client_credential_provider_name.txt"
-    content = aws_bedrockagentcore_oauth2_credential_provider.workday_agent_client.name
+resource "local_file" "credential_provider_name" {
+    filename = "${path.root}/../tmp/credential_provider_name.txt"
+    content = aws_bedrockagentcore_oauth2_credential_provider.workday_agent.name
 }
+

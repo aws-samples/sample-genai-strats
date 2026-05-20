@@ -17,6 +17,7 @@ print(f"agent_card.url={agent_card.url}")
 _context_ids: dict[str, str] = {}
 
 def build_tools(user_id: str):
+    print("> a2a::build_tools")
 
     @tool
     async def send_message_to_workday(prompt: str):

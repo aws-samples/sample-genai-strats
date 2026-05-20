@@ -1,4 +1,5 @@
 import boto3
+from botocore.exceptions import ClientError
 import os
 import asyncio
 from bedrock_agentcore.services.identity import IdentityClient, UserIdIdentifier
@@ -14,12 +15,18 @@ region = boto3.session.Session().region_name
 identity_client = IdentityClient(region)
 AGENT_MODE = os.environ.get("AGENT_MODE")
 
+ENV_VAR_ACCESS_TOKEN = os.environ.get("ACCESS_TOKEN", None)
+
 async def initialize(payload):
     print("> initialize")
     callback_url = payload.get("callback_url")
     user_id = payload.get("user_id", DEFAULT_TEST_USER_ID)
     print(f"| callback_url={callback_url}")
     print(f"| user_id={user_id}")
+
+    if ENV_VAR_ACCESS_TOKEN is not None:
+        print("| Found ACCESS_TOKEN env var, skipping auth sequence")
+        return {"status":"ok", "agent_mode": AGENT_MODE}
 
     loop = asyncio.get_event_loop()
     auth_url_future = loop.create_future()
@@ -69,6 +76,11 @@ async def get_access_token(on_auth_url_cb, callback_url, user_id):
     print(f"| callback_url={callback_url}")
     print(f"| user_id={user_id}")
     print(f"| getting workload access token")
+
+    if ENV_VAR_ACCESS_TOKEN is not None:
+        print("| Found ACCESS_TOKEN env var, skipping auth sequence")
+        return ENV_VAR_ACCESS_TOKEN
+
     response = identity_client.get_workload_access_token(workload_name=WORKLOAD_IDENTITY_NAME, user_id=user_id)
     workload_access_token = response.get("workloadAccessToken")
     print(f"| workload_access_token={workload_access_token[:10]}...REDACTED...")
@@ -95,10 +107,20 @@ async def complete_auth(payload):
     print(f"| session_id={session_id}")
     print(f"| user_id={user_id}")
 
-    identity_client.complete_resource_token_auth(
-        session_uri=session_id,
-        user_identifier=UserIdIdentifier(user_id=user_id)
-    )
+    try:
+        identity_client.complete_resource_token_auth(
+            session_uri=session_id,
+            user_identifier=UserIdIdentifier(user_id=user_id)
+        )
+    except ClientError as e:
+        meta = e.response.get("ResponseMetadata", {})
+        print(f"| complete_resource_token_auth failed")
+        print(f"|   code={e.response['Error']['Code']}")
+        print(f"|   message={e.response['Error']['Message']}")
+        print(f"|   http_status={meta.get('HTTPStatusCode')}")
+        print(f"|   request_id={meta.get('RequestId')}")
+        print(f"|   retry_attempts={meta.get('RetryAttempts')}")
+        raise
     
     print(f"| auth sequence completed")
     return {"status":"ok"}

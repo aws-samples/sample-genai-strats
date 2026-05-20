@@ -4,7 +4,6 @@ from pathlib import Path
 
 import oauth2_client
 
-
 def acquire_tokens(client_name, client_id, client_secret, authz_endpoint, token_endpoint, redirect_uri):
     refresh_token_path = Path(f"./../tmp/{client_name}_refresh_token.txt")
     access_token_path = Path(f"./../tmp/{client_name}_access_token.txt")
@@ -58,3 +57,4 @@ def _save_tokens(tokens, access_token_path, refresh_token_path):
     print(f"| access_token={access_token[:10]}...REDACTED...")
     print(f"| refresh_token={refresh_token[:10]}...REDACTED...")
     print("| Tokens saved to ./tmp/")
+

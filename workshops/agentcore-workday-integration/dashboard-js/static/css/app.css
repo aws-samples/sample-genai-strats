@@ -2,6 +2,12 @@ body {
   font-size: 1.1rem;
 }
 
+#main-container {
+  width: 80%;
+  min-width: 800px;
+  margin: 0 auto;
+}
+
 #chat-box {
   height: 65vh;
   overflow-y: auto;

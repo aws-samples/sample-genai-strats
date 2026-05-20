@@ -1,20 +1,19 @@
-# Copy these values from Workday
+# Module 1 - Copy these values from Workday Site
 WORKDAY_TENANT_ALIAS=
+WORKDAY_ACCESS_TOKEN=
 
-# Workday API Client configuration 
-API_CLIENT_ID=
-API_CLIENT_SECRET=
-API_CLIENT_AUTHZ_ENDPOINT=
-API_CLIENT_TOKEN_ENDPOINT=
+AGENT_MCP_CLIENT_ID=
+AGENT_MCP_CLIENT_SECRET=
+AGENT_MCP_AUTHORIZATION_ENDPOINT=
+AGENT_MCP_TOKEN_ENDPOINT=
 
-# DO NOT CHANGE THIS VALUE! 
-# Configure your Workday API Client with this Redirect URI
-API_CLIENT_REDIRECT_URI=https://9svcav6rs3.execute-api.us-east-1.amazonaws.com
+# Module 2 - MCP
+AGENT_MCP_REDIRECT_URL=https://9svcav6rs3.execute-api.us-east-1.amazonaws.com/
+AGENT_MCP_ENDPOINT=https://api.eu.wcp.workday.com/robotgw/coremcp
 
+# --- Module 3 A2A
 # A2A scenario configuration 
-A2A_AGENT_CARD_URL=https://us.agent.workday.com/v1/a2a/TENANT_ALIAS/self-service-agent/.well-known/agent-card.json
-A2A_AGENT_CLIENT_ID=
-A2A_AGENT_CLIENT_SECRET=
-
-# MCP scenario configuration
-# TBD
+#A2A_AGENT_CARD_URL=https://eu.agent.workday.com/v1/a2a/TENANT_ALIAS/self-service-agent/.well-known/agent-card.json
+#A2A_AGENT_CLIENT_ID=
+#A2A_AGENT_CLIENT_SECRET=
+#A2A_AGENT_TOKEN_ISSUER=

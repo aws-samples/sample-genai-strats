@@ -42,7 +42,7 @@
   </div>
 
   <!-- Main chat UI -->
-  <div class="container-fluid py-3" style="max-width:860px;">
+  <div class="container-fluid py-3" id="main-container">
     <div class="d-flex align-items-center mb-3" style="height:40px;">
       <h5 class="mb-0 me-auto">AwesomeCorp HR Agent &mdash; Amazon Bedrock AgentCore + Workday</h5>
       <img src="images/aws-logo.png" alt="Amazon" style="height:100%; object-fit:contain; margin-left:16px;">
@@ -55,7 +55,7 @@
         autocomplete="off">
       <button type="submit" class="btn btn-primary" style="padding-left:2rem; padding-right:2rem; white-space:nowrap;">Send</button>
     </form>
-    <div id="examples" class="mt-2 d-flex justify-content-between"></div>
+    <div id="examples" class="mt-2 d-flex justify-content-center gap-2 flex-wrap"></div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
