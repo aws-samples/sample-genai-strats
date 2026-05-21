@@ -1,6 +1,6 @@
 {
-  "name": "AWSome HR Agent",
-  "description": "External HR Agent running on Amazon Bedrock AgentCore",
+  "name": "Sentinel Agent",
+  "description": "An external agent running on Amazon Bedrock AgentCore integrated with Workday via MCP protocol",
   "provider": { "id": "Provider=SELF-BUILT" },
   "platform": { "id": "Platform=AMAZON_BEDROCK_AGENTCORE" },
   "url": "https://aws.amazon.com",
@@ -32,13 +32,13 @@
       "skillId": "skill1",
       "executionMode": { "id": "Mode=Delegate" },
       "workdayResources": [
-        {
-          "description": "Get Workers (staffing/workers/view)",
+        { 
+          "description": "Get Workers — count the living (staffing/workers/view)",
           "tool_name": "getWorkers",
           "agent_resource": { "id": "c2466b0778c610000cdf9abc4fbc000c" }
         },
         {
-          "description": "Get Job Postings - open positions (recruiting/jobPostings/view)",
+          "description": "Get Job Postings — count the fallen / open positions (recruiting/jobPostings/view)",
           "tool_name": "getJobPostings",
           "agent_resource": { "id": "5597c990f22e10000fc4975e37560022" }
         }
@@ -62,6 +62,21 @@
           "description": "Get Worker Service Dates (staffing/workers/serviceDates/view)",
           "tool_name": "getWorkerServiceDates",
           "agent_resource": { "id": "6b1db753fd82100027d4d4b0f2cd001f" }
+        },
+        {
+          "description": "Get Mentorships (talentManagement/mentorships/view)",
+          "tool_name": "getMentorships",
+          "agent_resource": { "id": "96e7ee2167ea1000074ac1d67d180828" }
+        },
+        {
+          "description": "Get Org Chart (staffing/supervisoryOrganizations/orgChart/view)",
+          "tool_name": "getOrgChart",
+          "agent_resource": { "id": "643e3a1262971000055567b981030046" }
+        },
+        {
+          "description": "Get Interviews (recruiting/interviews/view)",
+          "tool_name": "getInterviews",
+          "agent_resource": { "id": "df78b8e577c910001f381909b55100e6" }
         }
       ]
     },
@@ -70,19 +85,9 @@
       "executionMode": { "id": "Mode=Delegate" },
       "workdayResources": [
         {
-          "description": "Get Succession Plans talentManagement/successionPlans/view",
-          "tool_name": "getSuccessionPlans",
-          "agent_resource": { "id": "7e3bb9fc9368100020e63f4bc4f60000" }
-        },
-        {
-          "description": "Get Succession Plan Candidates talentManagement/successionPlanEvents/candidates/view",
-          "tool_name": "getSuccessionPlanCandidates",
-          "agent_resource": { "id": "1cfdaf8784fb10002824820310d50000" }
-        },
-        {
-          "description": "Create Worker External Skill Level - staffing/workers/externalSkillLevel/create",
-          "tool_name": "createWorkerExternalSkillLevel",
-          "agent_resource": { "id": "69d975e384d710000a679d7080170002" }
+          "description": "Edit Mentorships (talentManagement/mentorships/edit/edit)",
+          "tool_name": "editMentorships",
+          "agent_resource": { "id": "d8a7d527cba210002bf03817fa8d0834" }
         }
       ]
     }

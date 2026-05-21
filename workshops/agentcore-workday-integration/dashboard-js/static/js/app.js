@@ -1,11 +1,18 @@
 const USER_AVATAR = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 const BOT_AVATAR  = "images/workday-logo-small.png";
 const EXAMPLES = {
-  mcp: [
+  // mcp: [
+  //   "How can you help me?",
+  //   "How many workers are in the system?",
+  //   "What positions are currently open?",
+  //   "Check Logan McNeil’s succession plan"
+  // ],
+  mcp:[
     "How can you help me?",
-    "How many workers are in the system?",
-    "What positions are currently open?",
-    "Check Logan McNeil’s succession plan"
+    "SENTINEL, how many operatives are still standing and what’s the horde score?",
+    "SENTINEL, how many open positions are in the system? Break it down by job type.",
+    "SENTINEL, map the active mentorship network. Who has development coverage right now — show me the active pairs and their mentorship IDs (mentorships with no end date)?",
+    "SENTINEL, from the mentorship network you just mapped, identify the mentee whose field readiness most needs reinforcement. Fortify their record — add a Joel-style: disciplined resilience and protective instinct under sustained pressure-style comment. This operative will not face the horde unprepared"
   ],
   a2a: [
     "How can you help me?",
@@ -32,8 +39,14 @@ function appendMsg(role, text) {
   $("#chat-box").append(html).scrollTop(1e9);
 }
 
+const PAGE_HEADERS = {
+  a2a: "AWSome HR Agent — Amazon Bedrock AgentCore + Workday via A2A",
+  mcp: "SENTINEL — Amazon Bedrock AgentCore + Workday via MCP"
+};
+
 function showChat(agentMode) {
   $("#overlay").hide();
+  $("#page-header").text(PAGE_HEADERS[agentMode] || PAGE_HEADERS.a2a);
   const examples = EXAMPLES[agentMode] || EXAMPLES.a2a;
   examples.forEach(ex => {
     $("#examples").append(`<button class="btn btn-sm btn-outline-secondary example-btn">${ex}</button>`);

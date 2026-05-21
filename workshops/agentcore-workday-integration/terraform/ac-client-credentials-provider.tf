@@ -11,6 +11,8 @@ resource "aws_bedrockagentcore_oauth2_credential_provider" "workday_agent" {
           authorization_endpoint = var.wd_agent_client_authz_endpoint
           token_endpoint = var.wd_agent_client_token_endpoint
           response_types = ["code"]
+          
+
         }
       }
     }
@@ -25,13 +27,13 @@ data "external" "credential_provider_callback_url" {
   ]
 }
 
-output "credential_provider_callback_url" {
-  value = data.external.credential_provider_callback_url.result["callback_url"]
-}
+# output "credential_provider_callback_url" {
+#   value = data.external.credential_provider_callback_url.result["callback_url"]
+# }
 
-# # output "agent_client_credential_provider_name" {
-# #   value = aws_bedrockagentcore_oauth2_credential_provider.workday_agent_client.name
-# # }
+# output "agent_client_credential_provider_name" {
+#   value = aws_bedrockagentcore_oauth2_credential_provider.workday_agent_client.name
+# }
 
 resource "local_file" "credential_provider_callback_url" {
     filename = "${path.root}/../tmp/credential_provider_callback_url.txt"
