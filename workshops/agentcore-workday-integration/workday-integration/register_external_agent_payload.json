@@ -14,15 +14,15 @@
     },
     {
       "id": "skill2",
-      "name": "Skill 2: Supervisory org lookups, member roaster, service dates",
-      "description": "LLM chains supervisory org lookup -> member roster -> service dates.",
+      "name": "Skill 2: Map Active Mentorship Coverage",
+      "description": "Surface mentorship network.",
       "inputModes": [{ "type": "application/json" }],
       "outputModes": [{ "type": "application/json" }]
     },
     {
       "id": "skill3",
-      "name": "Skill 3: Succession plan lookup, candidate check, write to Workday",
-      "description": "LLM chains succession plan lookup → candidate check → write to Workday.",
+      "name": "Skill 3: Reinforce the Network",
+      "description": "Fortify the mentorship network. First write to Workday.",
       "inputModes": [{ "type": "application/json" }],
       "outputModes": [{ "type": "application/json" }]
     }
