@@ -6,3 +6,4 @@ variable "wd_agent_client_authz_endpoint" {}
 variable "wd_agent_client_token_endpoint" {}
 variable "wd_agent_access_token" {default=""}
 variable "wd_agent_mcp_endpoint" {}
+variable "wd_agent_card_base_url" {}

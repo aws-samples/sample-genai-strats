@@ -6,9 +6,11 @@ import identity_helper
 from identity_helper import DEFAULT_TEST_USER_ID
 import os
 
-print(">Starting agent...")
+print("> Starting agent...")
 
 AGENT_MODE = os.environ.get("AGENT_MODE")
+print(f"| Starting with AGENT_MODE={AGENT_MODE}")
+
 if AGENT_MODE=="a2a":
     from system_prompt_a2a import SYSTEM_PROMPT
     from a2a_tools import build_tools
@@ -16,10 +18,8 @@ elif AGENT_MODE=="mcp":
     from system_prompt_mcp import SYSTEM_PROMPT
     from mcp_tools import build_tools
 else:
-    print(f"Unrecognized AGENT_MODE={AGENT_MODE}. Stopping.")
+    print(f"| Unrecognized AGENT_MODE={AGENT_MODE}. Stopping.")
     exit(1)
-
-print(f"Starting with AGENT_MODE={AGENT_MODE}")
 
 app = BedrockAgentCoreApp()
 model = BedrockModel(model_id="us.anthropic.claude-sonnet-4-6")

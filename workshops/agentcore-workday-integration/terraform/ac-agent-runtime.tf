@@ -80,6 +80,7 @@ resource "aws_bedrockagentcore_agent_runtime" "agent" {
     AGENT_MODE               = var.wd_agent_mode
     ACCESS_TOKEN             = var.wd_agent_access_token
     MCP_ENDPOINT             = var.wd_agent_mcp_endpoint
+    A2A_AGENT_CARD_BASE_URL  = var.wd_agent_card_base_url
   }
 }
 

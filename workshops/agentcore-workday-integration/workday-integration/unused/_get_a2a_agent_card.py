@@ -15,10 +15,9 @@ def get_agent_card():
     print("-" * 20)
     print("Retrieving Agent Card (via a2a)")
     WORKDAY_TENANT_ALIAS = os.getenv("WORKDAY_TENANT_ALIAS")
-    WORKDAY_ACCESS_TOKEN = os.getenv("WORKDAY_ACCESS_TOKEN")
     A2A_AGENT_CARD_URL = os.getenv("A2A_AGENT_CARD_URL").replace("TENANT_ALIAS", WORKDAY_TENANT_ALIAS)
-    # ACCESS_TOKEN_PATH = Path("./../tmp/api_client_access_token.txt")
-    # access_token = ACCESS_TOKEN_PATH.read_text()
+    A2A_AGENT_ACCESS_TOKEN_PATH = Path("./../tmp/a2a_agent_access_token.txt")
+    A2A_AGENT_ACCESS_TOKEN = A2A_AGENT_ACCESS_TOKEN_PATH.read_text()
     A2A_AGENT_CARD_PATH = Path("./../tmp/a2a_agent_card.json")
 
     if not WORKDAY_TENANT_ALIAS:
@@ -26,23 +25,23 @@ def get_agent_card():
         exit(1)
 
 
-    if not WORKDAY_ACCESS_TOKEN:
+    if not A2A_AGENT_ACCESS_TOKEN:
         print("ERROR: WORKDAY_ACCESS_TOKEN not found.")
         exit(1)
 
     print(f"| WORKDAY_TENANT_ALIAS={WORKDAY_TENANT_ALIAS}")
-    print(f"| WORKDAY_ACCESS_TOKEN={WORKDAY_ACCESS_TOKEN[:10]}...REDACTED...")
+    print(f"| A2A_AGENT_ACCESS_TOKEN={A2A_AGENT_ACCESS_TOKEN[:10]}...REDACTED...")
     print(f"| A2A_AGENT_CARD_URL={A2A_AGENT_CARD_URL}")
-
+    
     # Derive base_url and relative card path from the full AGENT_CARD_URL
     agent_card_url_parsed = urlparse(A2A_AGENT_CARD_URL)
     agent_card_base_url = f"{agent_card_url_parsed.scheme}://{agent_card_url_parsed.netloc}"
     agent_card_path = agent_card_url_parsed.path
  
-    # print(f"| agent_card_base_url={agent_card_base_url}")
-    # print(f"| agent_card_path={agent_card_path}")
+    print(f"| agent_card_base_url={agent_card_base_url}")
+    print(f"| agent_card_path={agent_card_path}")
 
-    agent_card = asyncio.run(_get_card(WORKDAY_ACCESS_TOKEN, agent_card_base_url, agent_card_path))
+    agent_card = asyncio.run(_get_card(A2A_AGENT_ACCESS_TOKEN, agent_card_base_url, agent_card_path))
 
     print("-" * 20)
     print("A2A agent card retrieved")

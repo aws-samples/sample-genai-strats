@@ -24,7 +24,7 @@ async def initialize(payload):
     print(f"| callback_url={callback_url}")
     print(f"| user_id={user_id}")
 
-    if ENV_VAR_ACCESS_TOKEN is not None:
+    if ENV_VAR_ACCESS_TOKEN:
         print("| Found ACCESS_TOKEN env var, skipping auth sequence")
         return {"status":"ok", "agent_mode": AGENT_MODE}
 
@@ -77,7 +77,7 @@ async def get_access_token(on_auth_url_cb, callback_url, user_id):
     print(f"| user_id={user_id}")
     print(f"| getting workload access token")
 
-    if ENV_VAR_ACCESS_TOKEN is not None:
+    if ENV_VAR_ACCESS_TOKEN:
         print("| Found ACCESS_TOKEN env var, skipping auth sequence")
         return ENV_VAR_ACCESS_TOKEN
 
@@ -88,7 +88,7 @@ async def get_access_token(on_auth_url_cb, callback_url, user_id):
     print(f"| getting resource access token")
     access_token = await identity_client.get_token(
         provider_name=CREDENTIAL_PROVIDER_NAME,
-        scopes=["profile"],
+        scopes=[],
         auth_flow="USER_FEDERATION",
         agent_identity_token=workload_access_token,
         callback_url=callback_url,
@@ -115,11 +115,11 @@ async def complete_auth(payload):
     except ClientError as e:
         meta = e.response.get("ResponseMetadata", {})
         print(f"| complete_resource_token_auth failed")
-        print(f"|   code={e.response['Error']['Code']}")
-        print(f"|   message={e.response['Error']['Message']}")
-        print(f"|   http_status={meta.get('HTTPStatusCode')}")
-        print(f"|   request_id={meta.get('RequestId')}")
-        print(f"|   retry_attempts={meta.get('RetryAttempts')}")
+        print(f"| code={e.response['Error']['Code']}")
+        print(f"| message={e.response['Error']['Message']}")
+        print(f"| http_status={meta.get('HTTPStatusCode')}")
+        print(f"| request_id={meta.get('RequestId')}")
+        print(f"| retry_attempts={meta.get('RetryAttempts')}")
         raise
     
     print(f"| auth sequence completed")

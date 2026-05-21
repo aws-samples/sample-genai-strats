@@ -8,7 +8,7 @@ from identity_helper import get_access_token
 mcp_tools = {}
 mcp_clients = {}
 
-MCP_ENDPOINT = os.environ.get("MCP_ENDPOINT", "https://api.eu.wcp.workday.com/robotgw/coremcp")
+MCP_ENDPOINT = os.environ.get("MCP_ENDPOINT")
 print(f"> MCP_ENDPOINT={MCP_ENDPOINT}")
 
 async def build_tools(user_id):
@@ -24,7 +24,7 @@ async def build_tools(user_id):
     print(f"| access_token={access_token[:10]}...REDACTED...")
 
     mcp_client = MCPClient(
-        lambda: streamablehttp_client(  # pyright: ignore[reportDeprecated]
+        lambda: streamablehttp_client(  
             url=MCP_ENDPOINT,
             headers={"Authorization":f"Bearer {access_token}"}
             )

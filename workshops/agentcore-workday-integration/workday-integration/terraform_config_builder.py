@@ -41,29 +41,36 @@ if agent_mode=="mcp":
     CLIENT_SECRET = os.environ.get("AGENT_MCP_CLIENT_SECRET")
     AUTHORIZATION_ENDPOINT = os.environ.get("AGENT_MCP_AUTHORIZATION_ENDPOINT")
     TOKEN_ENDPOINT = os.environ.get("AGENT_MCP_TOKEN_ENDPOINT")
-    MCP_ENDPOINT = os.environ.get("AGENT_MCP_ENDPOINT")
     
     access_token_path = Path(__file__).parent.parent / "tmp" / "mcp_agent_access_token.txt"
-    ACCESS_TOKEN = access_token_path.read_text().strip()
 
-    print(f"| CLIENT_ID={CLIENT_ID}")
-    print(f"| CLIENT_SECRET={CLIENT_SECRET[:2]}...REDACTED...")
-    print(f"| AUTHORIZATION_ENDPOINT={AUTHORIZATION_ENDPOINT}")
-    print(f"| TOKEN_ENDPOINT={TOKEN_ENDPOINT}")
-    print(f"| ACCESS_TOKEN={ACCESS_TOKEN[:10]}...REDACTED...")
-    print(f"| MCP_ENDPOINT={MCP_ENDPOINT}")
+elif agent_mode=="a2a":
+    print("> Retrieving A2A Agent configuration")
+    token_file_path = tmp_path / "a2a_agent_access_token.txt"
+    token_issuer = get_issuer(token_file_path)
+    print(f"| token_issuer={token_issuer}")
+
+    CLIENT_ID = os.environ.get("A2A_AGENT_CLIENT_ID")
+    CLIENT_SECRET = os.environ.get("A2A_AGENT_CLIENT_SECRET")
+    AUTHORIZATION_ENDPOINT = os.environ.get("A2A_AGENT_AUTHORIZATION_ENDPOINT")
+    TOKEN_ENDPOINT = os.environ.get("A2A_AGENT_TOKEN_ENDPOINT")
+    
+    access_token_path = Path(__file__).parent.parent / "tmp" / "a2a_agent_access_token.txt"
 
 else:
     print("NOOP")
 
-# Extract authz and token endpoints from agent card
-# print("> Retrieving authz/token endpoints from Agent Card")
-# agent_card = json.loads((tmp_path / "a2a_agent_card.json").read_text())
-# oauth_flows = agent_card["securitySchemes"]["WorkdayOAuth"]["flows"]["authorizationCode"]
-# agent_client_authz_endpoint = oauth_flows["authorizationUrl"]
-# agent_client_token_endpoint = oauth_flows["tokenUrl"]
-# print(f"| agent_client_authz_endpoint={agent_client_authz_endpoint}")
-# print(f"| agent_client_token_endpoint={agent_client_token_endpoint}")
+ACCESS_TOKEN = access_token_path.read_text().strip()
+MCP_ENDPOINT = os.environ.get("AGENT_MCP_ENDPOINT")
+A2A_AGENT_CARD_BASE_URL=os.environ.get("A2A_AGENT_CARD_BASE_URL").replace("TENANT_ALIAS", WORKDAY_TENANT_ALIAS)
+
+print(f"| CLIENT_ID={CLIENT_ID}")
+print(f"| CLIENT_SECRET={CLIENT_SECRET[:2]}...REDACTED...")
+print(f"| AUTHORIZATION_ENDPOINT={AUTHORIZATION_ENDPOINT}")
+print(f"| TOKEN_ENDPOINT={TOKEN_ENDPOINT}")
+print(f"| ACCESS_TOKEN={ACCESS_TOKEN[:10]}...REDACTED...")
+print(f"| MCP_ENDPOINT={MCP_ENDPOINT}")
+print(f"| A2A_AGENT_CARD_BASE_URL={A2A_AGENT_CARD_BASE_URL}")
 
 print("> Writing terraform.tfvars")
 values = {
@@ -74,7 +81,8 @@ values = {
     "wd_agent_client_authz_endpoint": AUTHORIZATION_ENDPOINT,
     "wd_agent_client_token_endpoint": TOKEN_ENDPOINT,
     "wd_agent_access_token": ACCESS_TOKEN,
-    "wd_agent_mcp_endpoint": MCP_ENDPOINT
+    "wd_agent_mcp_endpoint": MCP_ENDPOINT,
+    "wd_agent_card_base_url": A2A_AGENT_CARD_BASE_URL
 }
 
 output_path = tmp_path / "terraform.tfvars"
