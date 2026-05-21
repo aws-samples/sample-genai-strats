@@ -1,19 +1,25 @@
-# Module 1 - Copy these values from Workday Site
+# Module 1 - Copy these values from Workday Developer Site
 WORKDAY_TENANT_ALIAS=
 WORKDAY_ACCESS_TOKEN=
 
-AGENT_MCP_CLIENT_ID=
-AGENT_MCP_CLIENT_SECRET=
+# Use this value when configuring an external agent in Workday Agent Management Hub
+AGENT_MCP_REDIRECT_URL=https://9svcav6rs3.execute-api.us-east-1.amazonaws.com/
+
+# Populate these values after configuring the external agent in Workday Agent Management Hub
 AGENT_MCP_AUTHORIZATION_ENDPOINT=
 AGENT_MCP_TOKEN_ENDPOINT=
+AGENT_MCP_CLIENT_ID=
+AGENT_MCP_CLIENT_SECRET=
 
-# Module 2 - MCP - DO NOT CHANGE THE VALUES OF THESE PROPERTIES UNLESS INSTRUCTED
-AGENT_MCP_REDIRECT_URL=https://9svcav6rs3.execute-api.us-east-1.amazonaws.com/
+# Module 2 - MCP
 AGENT_MCP_ENDPOINT=https://api.eu.wcp.workday.com/robotgw/coremcp
 
-# --- Module 3 A2A
-# A2A scenario configuration 
-#A2A_AGENT_CLIENT_ID=
-#A2A_AGENT_CLIENT_SECRET=
-#A2A_AGENT_TOKEN_ISSUER=
-#A2A_AGENT_CARD_URL=https://eu.agent.workday.com/v1/a2a/TENANT_ALIAS/self-service-agent/.well-known/agent-card.json
+# Module 3 - A2A
+A2A_API_CLIENT_REDIRECT_URI=https://9svcav6rs3.execute-api.us-east-1.amazonaws.com/
+A2A_AGENT_CARD_BASE_URL=https://eu.agent.workday.com/v1/a2a/TENANT_ALIAS/self-service-agent
+
+A2A_AGENT_CLIENT_ID=
+A2A_AGENT_CLIENT_SECRET=
+A2A_AGENT_AUTHORIZATION_ENDPOINT=
+A2A_AGENT_TOKEN_ENDPOINT=
+
