@@ -30,13 +30,6 @@ resource "aws_iam_role_policy" "agent" {
           "bedrock:InvokeModel",
           "bedrock:InvokeModelWithResponseStream",
 
-          # To use Workload Identity
-          "bedrock-agentcore:GetWorkloadIdentity",
-          "bedrock-agentcore:GetWorkloadAccessTokenForUserId",
-          "bedrock-agentcore:GetResourceOauth2Token",
-          "bedrock-agentcore:CompleteResourceTokenAuth",
-          "secretsmanager:GetSecretValue",
-
           # To send telemetry to CloudWatch
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
