@@ -25,6 +25,7 @@ def acquire_tokens(client_name, client_id, client_secret, authz_endpoint, token_
     else:
         print("No refresh token found. Starting authorization_code flow...")
         tokens = _authorization_code_flow(token_endpoint, authz_endpoint, redirect_uri, client_id, client_secret)
+        print(f"tokens={tokens}")
 
     _save_tokens(tokens, access_token_path, refresh_token_path)
     return tokens.get('access_token')
@@ -32,7 +33,10 @@ def acquire_tokens(client_name, client_id, client_secret, authz_endpoint, token_
 
 def _authorization_code_flow(token_endpoint, authz_endpoint, redirect_uri, client_id, client_secret):
     print("-" * 20)
-    authorization_url = oauth2_client.build_authorization_url(authz_endpoint, client_id, redirect_uri)
+    code_verifier = oauth2_client.generate_code_verifier()
+    code_challenge = oauth2_client.derive_code_challenge(code_verifier)
+
+    authorization_url = oauth2_client.build_authorization_url(authz_endpoint, client_id, redirect_uri, code_challenge)
     print("Open the following URL in your browser. Login and provide consent. Paste Authorization Code back into the Terminal.")
     print("")
     print(authorization_url)
@@ -44,7 +48,7 @@ def _authorization_code_flow(token_endpoint, authz_endpoint, redirect_uri, clien
     print("Retrieving access/refresh tokens via authorization_code grant")
 
     return oauth2_client.request_tokens_with_authorization_code(
-        token_endpoint, authorization_code, client_id, client_secret,
+        token_endpoint, authorization_code, client_id, client_secret, code_verifier,
     )
 
 
@@ -52,9 +56,15 @@ def _save_tokens(tokens, access_token_path, refresh_token_path):
     os.makedirs("./../tmp", exist_ok=True)
     access_token = tokens.get('access_token')
     refresh_token = tokens.get('refresh_token')
-    access_token_path.write_text(access_token)
-    refresh_token_path.write_text(refresh_token)
-    print(f"| access_token={access_token[:10]}...REDACTED...")
-    print(f"| refresh_token={refresh_token[:10]}...REDACTED...")
-    print("| Tokens saved to ./tmp/")
+    
+    if access_token:
+        access_token_path.write_text(access_token)
+        print(f"| access_token={access_token[:10]}...REDACTED...")
+        print("| access token saved to ./tmp/")
 
+    if refresh_token:     
+        refresh_token_path.write_text(refresh_token)
+        print(f"| refresh_token={refresh_token[:10]}...REDACTED...")
+        print("| refresh token saved to ./tmp/")
+    
+ 

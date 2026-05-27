@@ -55,10 +55,11 @@ response = requests.post(
         "Content-Type": "application/json",
     },
 )
+print(f"| status={response.status_code}")
+print(f"| body={response.text}")
 response.raise_for_status()
 response_json = response.json()
 
-print(f"| status={response.status_code}")
 print(f"| name={response_json.get('name')}")
 print(f"| url={response_json.get('url')}")
 
