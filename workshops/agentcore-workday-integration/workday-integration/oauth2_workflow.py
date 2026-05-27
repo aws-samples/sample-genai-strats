@@ -25,7 +25,7 @@ def acquire_tokens(client_name, client_id, client_secret, authz_endpoint, token_
     else:
         print("No refresh token found. Starting authorization_code flow...")
         tokens = _authorization_code_flow(token_endpoint, authz_endpoint, redirect_uri, client_id, client_secret)
-        print(f"tokens={tokens}")
+        # print(f"tokens={tokens}")
 
     _save_tokens(tokens, access_token_path, refresh_token_path)
     return tokens.get('access_token')
