@@ -33,12 +33,12 @@
       "executionMode": { "id": "Mode=Delegate" },
       "workdayResources": [
         { 
-          "description": "Get Workers — count the living (staffing/workers/view)",
+          "description": "Get Workers (staffing/workers/view)",
           "tool_name": "getWorkers",
           "agent_resource": { "id": "c2466b0778c610000cdf9abc4fbc000c" }
         },
         {
-          "description": "Get Job Postings — count the fallen / open positions (recruiting/jobPostings/view)",
+          "description": "Get Job Postings (recruiting/jobPostings/view)",
           "tool_name": "getJobPostings",
           "agent_resource": { "id": "5597c990f22e10000fc4975e37560022" }
         }
