@@ -9,6 +9,11 @@ get-mcp-agent-access-token:
 		uv sync && \
 		uv run get_mcp_agent_access_token.py
 
+list-mcp-tools:
+	cd workday-integration && \
+		uv sync && \
+		uv run list_mcp_tools.py
+
 get-a2a-agent-access-token:
 	cd workday-integration && \
 		uv sync && \

@@ -40,7 +40,7 @@
         {
           "description": "Get Job Postings (recruiting/jobPostings/view)",
           "tool_name": "getJobPostings",
-          "agent_resource": { "id": "5597c990f22e10000fc4975e37560022" }
+          "agent_resource": { "id": "3557e59df3cf1000168bed1c1a0a0000" }
         }
       ]
     },
