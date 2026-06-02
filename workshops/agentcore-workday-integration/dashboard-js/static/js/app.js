@@ -12,7 +12,7 @@ const EXAMPLES = {
     "SENTINEL, how many operatives are active and what’s the horde score??",
     "SENTINEL, how many open positions are in the system? Break it down by job type.",
     "SENTINEL, map the active mentorship network. Who has development coverage right now — show me the active pairs and their mentorship IDs (mentorships with no end date)?",
-    "SENTINEL, from the mentorship network you just mapped, identify the mentee whose field readiness most needs reinforcement. Fortify their record — add a Joel-style: disciplined resilience and protective instinct under sustained pressure-style comment. This operative will not face the horde unprepared"
+    "SENTINEL, from the mentorship network you just mapped, identify a mentee whose record has no field readiness comment logged yet — they're the most exposed. Fortify their record — add a Joel-style: disciplined resilience and protective instinct under sustained pressure-style comment. This operative will not face the horde unprepared"
   ],
   a2a: [
     "How can you help me?",
