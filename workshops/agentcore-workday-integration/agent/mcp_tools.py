@@ -26,8 +26,9 @@ async def build_tools(user_id):
     mcp_client = MCPClient(
         lambda: streamablehttp_client(  
             url=MCP_ENDPOINT,
-            headers={"Authorization":f"Bearer {access_token}"}
-            )
+            headers={"Authorization":f"Bearer {access_token}"},
+            timeout=120
+        )
     )
     mcp_client.start() 
     tools = mcp_client.list_tools_sync()

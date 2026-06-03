@@ -42,12 +42,23 @@ app.post("/app/api/init", async (req, res) => {
 app.post("/app/api/chat", async (req, res) => {
   const { message } = req.body;
   console.log(`> chat message=${message}`);
+
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+  res.flushHeaders();
+
+  const keepAlive = setInterval(() => res.write("event: keepAlive\ndata: {}\n\n"), 5000);
+
   try {
     const response = await handleMessage(message);
-    return res.json({ response });
+    res.write(`data: ${JSON.stringify({ response })}\n\n`);
   } catch (e) {
     console.error("chat error", e);
-    return res.status(500).json({ error: e.message });
+    res.write(`data: ${JSON.stringify({ error: e.message })}\n\n`);
+  } finally {
+    clearInterval(keepAlive);
+    res.end();
   }
 });
 

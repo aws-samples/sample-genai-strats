@@ -9,7 +9,7 @@ const EXAMPLES = {
   // ],
   mcp:[
     "How can you help me?",
-    "SENTINEL, how many operatives are active and what’s the horde score??",
+    "SENTINEL, how many operatives are active and what’s the horde score?",
     "SENTINEL, how many open positions are in the system? Break it down by job type.",
     "SENTINEL, map the active mentorship network. Who has development coverage right now — show me the active pairs and their mentorship IDs (mentorships with no end date)?",
     "SENTINEL, from the mentorship network you just mapped, identify a mentee whose record has no field readiness comment logged yet — they're the most exposed. Fortify their record — add a Joel-style: disciplined resilience and protective instinct under sustained pressure-style comment. This operative will not face the horde unprepared"
@@ -90,26 +90,39 @@ $("#chat-form").on("submit", function (e) {
   waitingModal.show();
   appendMsg("user", msg);
   appendMsg("bot", "…");
-  $.ajax({
-    url: "/app/api/chat",
+  fetch("/app/api/chat", {
     method: "POST",
-    contentType: "application/json",
-    data: JSON.stringify({ message: msg }),
-    dataType: "json"
-  })
-    .done(data => {
-      const text = data.response || "Error. Try again.";
-      const html = $("<div>").text(text).html().replace(/\n/g, "<br>");
-      $("#chat-box .msg-bot:last .bubble").html(html);
-    })
-    .fail(() => {
-      $("#chat-box .msg-bot:last .bubble").text("Error communicating with agent. Try again.");
-    })
-    .always(() => {
-      waitingModal.hide();
-      $("#chat-input").prop("disabled", false);
-      $("#chat-form button[type=submit]").prop("disabled", false);
-      $("#chat-input").focus();
-      $("#chat-box").scrollTop(1e9);
-    });
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: msg })
+  }).then(res => {
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    function pump() {
+      return reader.read().then(({ done, value }) => {
+        if (done) return;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          const parsed = JSON.parse(line.slice(6));
+          if (!parsed.response && !parsed.error) continue;
+          const text = parsed.response || parsed.error || "Error. Try again.";
+          const html = $("<div>").text(text).html().replace(/\n/g, "<br>");
+          $("#chat-box .msg-bot:last .bubble").html(html);
+        }
+        return pump();
+      });
+    }
+    return pump();
+  }).catch(() => {
+    $("#chat-box .msg-bot:last .bubble").text("Error communicating with agent. Try again.");
+  }).finally(() => {
+    waitingModal.hide();
+    $("#chat-input").prop("disabled", false);
+    $("#chat-form button[type=submit]").prop("disabled", false);
+    $("#chat-input").focus();
+    $("#chat-box").scrollTop(1e9);
+  });
 });
