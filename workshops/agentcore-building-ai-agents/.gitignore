@@ -1,0 +1,40 @@
+# Runtime outputs
+tmp/
+.$diagrams.drawio.bkp
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+*.egg-info/
+dist/
+build/
+# pip deps installed into Lambda source dirs by terraform null_resource
+src/lambdas/tool-web-search/*.dist-info/
+src/lambdas/tool-web-search/bin/
+
+# uv
+.python-version
+
+# Terraform
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+*.tfplan
+override.tf
+override.tf.json
+
+# Environment files
+.env
+.env.*
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# macOS
+.DS_Store
+
+.claude
+claude.md
