@@ -1,0 +1,27 @@
+# Terraform state and working files
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+
+# Runtime outputs (tokens, URLs, IDs written by Terraform/Makefile)
+tmp/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.uv/
+
+# Node
+node_modules/
+
+# Lambda build artifacts
+src/lambdas/**/*.zip
+
+# Draw.io
+*.drawio.bkp
+*.drawio.dtmp
+
+# macOS
+.DS_Store
