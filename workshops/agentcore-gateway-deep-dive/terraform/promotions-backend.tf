@@ -105,6 +105,8 @@
 #       EOT
 #     }
 #   }
+
+#   depends_on = [aws_bedrockagentcore_gateway_target.promotions]
 # }
 
 # resource "aws_bedrockagentcore_api_key_credential_provider" "promotions" {

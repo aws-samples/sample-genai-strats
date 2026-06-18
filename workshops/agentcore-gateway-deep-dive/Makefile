@@ -22,8 +22,7 @@ redeploy-gateway:
 	
 	@echo "Replacing AgentCore Gateway..."
 	cd terraform && terraform apply --auto-approve \
-		-replace=awscc_bedrockagentcore_gateway.pizza_shop \
-		-replace=awscc_bedrockagentcore_policy_engine.pizza_shop
+		-replace=awscc_bedrockagentcore_gateway.pizza_shop 
 
 destroy:
 	@echo "Destroying everything..."

@@ -13,6 +13,11 @@ resource "awscc_bedrockagentcore_policy_engine" "pizza_shop" {
 #       statement = "permit(principal, action, resource is AgentCore::Gateway);"
 #     }
 #   }
+
+#   depends_on = [
+#     aws_bedrockagentcore_gateway_target.get_menu,
+#     aws_bedrockagentcore_gateway_target.create_order,
+#   ]
 # }
 
 # Module 4 - Step 7: Permit only get-menu for all principals
@@ -32,6 +37,8 @@ resource "awscc_bedrockagentcore_policy_engine" "pizza_shop" {
 #       EOT
 #     }
 #   }
+
+#   depends_on = [ aws_bedrockagentcore_gateway_target.get_menu ]
 # }
 
 # Module 4 - Step 8: Permit create-order only if token has gateway/create_order scope
@@ -55,6 +62,8 @@ resource "awscc_bedrockagentcore_policy_engine" "pizza_shop" {
 #       EOT
 #     }
 #   }
+
+#  depends_on = [ aws_bedrockagentcore_gateway_target.create_order ]
 # }
 
 # Module 4 - Step 9: Forbid ordering Pineapple Deluxe (id=5) for everyone
@@ -77,4 +86,6 @@ resource "awscc_bedrockagentcore_policy_engine" "pizza_shop" {
 #       EOT
 #     }
 #   }
+
+#  depends_on = [ aws_bedrockagentcore_gateway_target.create_order ]
 # }
