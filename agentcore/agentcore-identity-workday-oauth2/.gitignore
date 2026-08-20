@@ -1,0 +1,18 @@
+# Terraform state (may contain secrets) and local dirs
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/terraform.tfvars
+crash.log
+crash.*.log
+
+# Runtime artifacts written by the workflow (tokens, names)
+tmp/
+
+# Python / uv
+scripts/.venv/
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store

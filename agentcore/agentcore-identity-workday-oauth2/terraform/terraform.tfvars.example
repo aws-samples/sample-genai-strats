@@ -1,0 +1,7 @@
+client_id     = ""
+client_secret = ""
+
+oauth2_issuer         = ""
+oauth2_authz_endpoint = ""
+oauth2_token_endpoint = ""
+
