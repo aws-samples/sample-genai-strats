@@ -1,0 +1,36 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Virtual environments (uv creates .venv). uv.lock IS committed.
+.venv/
+src/.venv/
+
+# --- Terraform ---
+# Local provider plugins and cached modules.
+.terraform/
+# State files may contain secrets and are environment-specific.
+*.tfstate
+*.tfstate.*
+# Crash logs and plan output.
+crash.log
+crash.*.log
+*.tfplan
+# Variable files often hold secrets. .terraform.lock.hcl is intentionally NOT
+# ignored — it should be committed.
+*.tfvars
+*.tfvars.json
+
+# --- Generated artifacts & secrets ---
+# tmp/ holds Terraform-generated outputs: Cognito client secret, access tokens,
+# runtime ARNs/URLs, and the packaged server zip. None of this belongs in git.
+tmp/
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+*.swp
