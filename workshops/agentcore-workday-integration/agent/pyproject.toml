@@ -9,4 +9,5 @@ dependencies = [
     "boto3>=1.42.97",
     "botocore[crt]>=1.42.97",
     "strands-agents[a2a]>=1.38.0",
+    "mcp==1.27.1",    
 ]
