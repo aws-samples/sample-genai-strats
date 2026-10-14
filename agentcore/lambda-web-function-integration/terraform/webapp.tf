@@ -96,6 +96,15 @@ resource "aws_iam_role_policy" "webapp" {
           aws_bedrockagentcore_agent_runtime.agent.agent_runtime_arn,
           "${aws_bedrockagentcore_agent_runtime.agent.agent_runtime_arn}/*",
         ]
+      },
+      {
+        # The webapp reads the login secret and session signing key at startup.
+        Effect = "Allow"
+        Action = "secretsmanager:GetSecretValue"
+        Resource = [
+          aws_secretsmanager_secret.login.arn,
+          aws_secretsmanager_secret.session_signing_key.arn,
+        ]
       }
     ]
   })
@@ -164,11 +173,17 @@ resource "awscc_lambda_web_function_revision" "webapp" {
   service_config = {
     execution_role_arn = time_sleep.webapp_role_propagation.triggers["role_arn"]
     environment_variables = {
-      AGENT_RUNTIME_ARN = aws_bedrockagentcore_agent_runtime.agent.agent_runtime_arn
+      AGENT_RUNTIME_ARN       = aws_bedrockagentcore_agent_runtime.agent.agent_runtime_arn
+      DEMO_LOGIN_SECRET_ARN   = aws_secretsmanager_secret.login.arn
+      SESSION_SIGNING_KEY_ARN = aws_secretsmanager_secret.session_signing_key.arn
     }
   }
 
-  depends_on = [aws_s3_bucket_policy.webapp]
+  depends_on = [
+    aws_s3_bucket_policy.webapp,
+    aws_secretsmanager_secret_version.login,
+    aws_secretsmanager_secret_version.session_signing_key,
+  ]
 
   lifecycle {
     create_before_destroy = true

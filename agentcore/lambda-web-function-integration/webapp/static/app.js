@@ -1,4 +1,9 @@
 $(function () {
+  const $login = $("#login");
+  const $loginForm = $("#login-form");
+  const $secret = $("#secret");
+  const $loginButton = $("#login-button");
+  const $loginError = $("#login-error");
   const $messages = $("#messages");
   const $emptyState = $("#empty-state");
   const $composer = $("#composer");
@@ -6,7 +11,23 @@ $(function () {
   const $send = $("#send");
   const $stop = $("#stop");
 
+  const MAX_PROMPT_LENGTH = 100;
   let abortController = null;
+  let sessionToken = null;
+
+  // Exchange the login secret for a signed session token. The secret is only sent here; every
+  // later request authenticates with the token. The token is kept only in memory for this page
+  // view, so a reload returns to the login screen. A 401 means the secret is wrong.
+  async function connect(secret) {
+    const response = await fetch("/connect", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ secret }),
+    });
+    if (response.status === 401) throw new Error("Invalid login secret");
+    if (!response.ok) throw new Error(`Failed to connect (status ${response.status})`);
+    sessionToken = (await response.json()).sessionToken;
+  }
 
   function addMessage(role) {
     const $message = $("<div>").addClass(`message ${role}`).append($("<div>").addClass("content"));
@@ -31,7 +52,7 @@ $(function () {
   }
 
   function updateSendButton() {
-    $send.prop("disabled", $prompt.val().trim() === "");
+    $send.prop("disabled", sessionToken === null || $prompt.val().trim() === "");
   }
 
   // Parse an SSE byte stream into JSON events ("data: {...}\n\n" frames).
@@ -68,7 +89,7 @@ $(function () {
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-session-token": sessionToken },
         body: JSON.stringify({ prompt }),
         signal: abortController.signal,
       });
@@ -103,7 +124,7 @@ $(function () {
   $composer.on("submit", (e) => {
     e.preventDefault();
     const prompt = $prompt.val().trim();
-    if (!prompt || abortController) return;
+    if (!prompt || prompt.length > MAX_PROMPT_LENGTH || abortController) return;
     $prompt.val("").trigger("input");
     sendPrompt(prompt);
   });
@@ -124,6 +145,28 @@ $(function () {
   });
 
   $stop.on("click", () => abortController?.abort());
+
+  $loginForm.on("submit", async (e) => {
+    e.preventDefault();
+    const secret = $secret.val();
+    if (!secret) return;
+
+    $loginButton.prop("disabled", true);
+    $loginError.prop("hidden", true);
+    try {
+      await connect(secret);
+      $login.hide();
+      $messages.prop("hidden", false);
+      $composer.prop("hidden", false);
+      updateSendButton();
+      $prompt.trigger("focus");
+    } catch (err) {
+      $loginError.text(err.message).prop("hidden", false);
+      $secret.val("").trigger("focus");
+    } finally {
+      $loginButton.prop("disabled", false);
+    }
+  });
 
   updateSendButton();
 });

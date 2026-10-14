@@ -1,7 +1,7 @@
 # Lambda Web Function → AgentCore Runtime
 
 
-A ChatGPT-style chat app hosted on an [AWS Lambda Web Function](https://docs.aws.amazon.com/lambda/latest/dg/web-functions.html), backed by a [Strands](https://strandsagents.com) agent running on **Amazon Bedrock AgentCore Runtime**. 
+Agentic chat app hosted on an [AWS Lambda Web Function](https://docs.aws.amazon.com/lambda/latest/dg/web-functions.html), backed by a [Strands](https://strandsagents.com) agent running on **Amazon Bedrock AgentCore Runtime**. 
 
 ![](./chat-interface.png)
 
@@ -17,7 +17,7 @@ The agent's response is streamed token by token from the model, through AgentCor
 - Terraform
 - Docker (builds the agent's `linux/arm64` image)
 - Node.js 24 and npm
-- Access to Claude Sonnet 5.5 in Amazon Bedrock. The agent uses the `us.anthropic.claude-sonnet-5-5` cross-Region inference profile, so deploy to a US Region.
+- Access to Claude Haiku 5.5 in Amazon Bedrock. The agent uses the `us.anthropic.claude-haiku-5-5` cross-Region inference profile, so deploy to a US Region. Change `agent_model_id` in `terraform/agentcore_runtime.tf` to use a different model.
 - For local development only: Python 3.13, [uv](https://docs.astral.sh/uv/), and [nodemon](https://nodemon.io)
 
 ## Deploy
@@ -26,41 +26,25 @@ The agent's response is streamed token by token from the model, through AgentCor
 make deploy
 ```
 
-This provisions:
-
-- An ECR repository with the agent image, built locally and pushed
-- An AgentCore runtime that runs the agent, with an IAM role that can invoke the configured model through its inference profile
-- A versioned S3 bucket for the webapp code, with a bucket policy that lets the Lambda service read it
-- An execution role for the Web Function that can write its logs and invoke only this agent runtime
-- The Web Function, a revision built from the uploaded code, and one endpoint (`default`) that routes all traffic to that revision. Each code change creates a new revision, and the endpoint switches to it.
-
-When it finishes, Terraform prints the URL of the chat UI:
+Once provisioning completes, Terraform prints the chat UI's URL:
 
 ```
 webapp_url = "https://<endpoint-domain>.lambda-web.<region>.on.aws/"
 ```
 
-## Run locally (for development)
-
-Run the agent on port 8080:
+The UI asks for a login secret, generated on deploy and stored in Secrets Manager. Retrieve it with:
 
 ```bash
-make run-agent-local
-```
-
-Run the webapp on port 3000, at <http://localhost:3000>. It reads the runtime ARN from `tmp/agent_runtime_arn.txt`, so it talks to the **deployed** agent runtime, not the local agent:
-
-```bash
-make run-webapp-local
+make get-demo-secret
 ```
 
 ## Security considerations
 
-This is a demo, not a production-ready deployment:
+This is a sample, not a production-ready deployment:
 
-- **The endpoint is public.** It uses the `ApplicationManaged` auth type, and the webapp has no sign-in, so anyone with the URL can chat with the agent, and each message invokes the model in your account. Destroy the stack when you're done, or add authentication or a rate limit (`throttle_config.rate_limit` on the endpoint in `terraform/webapp.tf`).
-- **All users share one AgentCore session.** The webapp generates the session ID once, at startup. The agent keeps no conversation history, so nothing leaks between users today, but this must change before you add memory.
-- **The agent returns the request headers and payload** in its first event, for demonstration purposes. The UI doesn't display them, but they're visible in the browser's network tools.
+- To protect this demo from unauthorized access, the web app requires you to enter the secret randomly generated at deploy. *This is not a replacement for user authentication*. Make sure you always add real authentication with Cognito, Okta or similar, as well as rate limit (`throttle_config.rate_limit` on the endpoint in `terraform/webapp.tf`) prior to taking your applications to production. When using Web Function for APIs only (no web UI), use SigV4 authentication mode. 
+- Each visit to the demo page generates a new AgentCore session, created by `/connect` and is NOT persisted across reloads. The agent is stateless and keeps no conversation history.
+- To minimize token consumption, both input and output are capped. Prompts are limited to 100 characters, and the model's output is capped at 200 tokens.
 
 ## Teardown
 

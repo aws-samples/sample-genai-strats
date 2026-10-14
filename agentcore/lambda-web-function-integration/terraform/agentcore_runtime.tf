@@ -15,7 +15,7 @@ resource "aws_iam_role" "agent" {
 
 locals {
   # Passed to the agent as the MODEL_ID env var.
-  agent_model_id              = "us.anthropic.claude-sonnet-5-5"
+  agent_model_id              = "us.anthropic.claude-haiku-5-5"
   agent_inference_profile_arn = "arn:aws:bedrock:${local.region}:${local.account_id}:inference-profile/${local.agent_model_id}"
 }
 
