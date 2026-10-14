@@ -194,7 +194,15 @@ resource "awscc_lambda_web_function_endpoint" "webapp" {
   function_name = awscc_lambda_web_function.webapp.function_name
   endpoint_name = local.webapp_endpoint_name
   endpoint_type = "HomeRegion"
-  auth_type     = "ApplicationManaged"
+  
+  # "ApplicationManaged" means it is YOUR APP that is responsible for implementing 
+  # authentication and authorization. In this sample, a randomly generated secret 
+  # is used for auth. In your production applications you should always add actor 
+  # authentication via Cognito, Okta, or similar. 
+
+  # When building API-only apps (no web UI), use IamAuth instead to require
+  # callers to sign requests with SigV4. 
+  auth_type = "ApplicationManaged"
 
   revision_weights = [{
     revision_id = awscc_lambda_web_function_revision.webapp.revision_id
