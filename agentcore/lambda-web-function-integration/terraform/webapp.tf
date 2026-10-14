@@ -1,6 +1,8 @@
 locals {
   webapp_src_dir       = abspath("${path.module}/../webapp")
-  webapp_function_name = "${local.prefix}-webapp"
+  webapp_zip           = abspath("${path.module}/../tmp/webapp.zip")
+  webapp_s3_key        = "webapp.zip"
+  webapp_function_name = local.project_name
   webapp_endpoint_name = "default"
 }
 
@@ -20,13 +22,36 @@ resource "aws_s3_bucket_versioning" "webapp" {
 
 # Install production dependencies into webapp/node_modules.
 resource "terraform_data" "install_dependencies" {
-  # Changes on every plan, so npm ci runs on every terraform apply.
-  triggers_replace = plantimestamp()
+  # Reinstall when dependencies change, or when node_modules is missing (e.g. a fresh clone).
+  triggers_replace = [
+    filesha256("${local.webapp_src_dir}/package.json"),
+    filesha256("${local.webapp_src_dir}/package-lock.json"),
+    fileexists("${local.webapp_src_dir}/node_modules/.package-lock.json"),
+  ]
 
   provisioner "local-exec" {
     working_dir = local.webapp_src_dir
     command     = "npm ci --omit=dev"
   }
+}
+
+# depends_on defers reading this until after npm ci when deps are being reinstalled,
+# so the zip always includes node_modules.
+data "archive_file" "webapp" {
+  type        = "zip"
+  source_dir  = local.webapp_src_dir
+  output_path = local.webapp_zip
+
+  depends_on = [terraform_data.install_dependencies]
+}
+
+resource "aws_s3_object" "webapp" {
+  bucket      = aws_s3_bucket.webapp.bucket
+  key         = local.webapp_s3_key
+  source      = data.archive_file.webapp.output_path
+  source_hash = data.archive_file.webapp.output_base64sha256
+
+  depends_on = [aws_s3_bucket_versioning.webapp]
 }
 
 resource "aws_iam_role" "webapp" {
@@ -78,7 +103,6 @@ resource "aws_iam_role_policy" "webapp" {
 
 # At deploy time Lambda fetches the code zip as the service principal (not the execution role),
 # authorized by this bucket policy. Scoped to this account to avoid the confused-deputy problem.
-# Covers the whole bucket because `aws lambda-web deploy` picks its own object keys.
 resource "aws_s3_bucket_policy" "webapp" {
   bucket = aws_s3_bucket.webapp.id
   policy = jsonencode({
@@ -93,7 +117,7 @@ resource "aws_s3_bucket_policy" "webapp" {
           "s3:GetObject",
           "s3:GetObjectVersion",
         ]
-        Resource = "${aws_s3_bucket.webapp.arn}/*"
+        Resource = "${aws_s3_bucket.webapp.arn}/${local.webapp_s3_key}"
         Condition = {
           StringEquals = {
             "aws:SourceAccount" = local.account_id
@@ -115,71 +139,54 @@ resource "time_sleep" "webapp_role_propagation" {
   depends_on = [aws_iam_role_policy.webapp]
 }
 
-# Owns the Web Function's lifecycle: deletes it on terraform destroy. Kept separate from the deploy
-# step below, which is replaced on every code change and must not delete the function each time.
-resource "terraform_data" "web_function" {
-  input = {
-    name = local.webapp_function_name
-  }
-
-  provisioner "local-exec" {
-    when    = destroy
-    command = "aws lambda-web delete-web-function --function-name ${self.input.name}"
-  }
+resource "awscc_lambda_web_function" "webapp" {
+  function_name = local.webapp_function_name
 }
 
-# The AWS::Lambda::WebFunction CloudFormation type (used by awscc and Cloud Control) currently
-# rejects nodejs24.x, so the function is deployed with the Lambda Web API instead. `deploy` packages the webapp, uploads it, and
-# creates the function or adds a new revision; the endpoint serves the latest revision.
-resource "terraform_data" "web_function_deploy" {
-  triggers_replace = [
-    sha256(join("", [
-      for f in sort(fileset(local.webapp_src_dir, "**")) :
-      filesha256("${local.webapp_src_dir}/${f}") if !startswith(f, "node_modules/")
-    ])),
-    terraform_data.web_function.output.name,
-    time_sleep.webapp_role_propagation.triggers["role_arn"],
-    aws_bedrockagentcore_agent_runtime.agent.agent_runtime_arn,
-  ]
+# Revisions are immutable, so every new code version (or config change) replaces this resource.
+# create_before_destroy lets the endpoint switch to the new revision before the old one is deleted.
+resource "awscc_lambda_web_function_revision" "webapp" {
+  function_name = awscc_lambda_web_function.webapp.function_name
 
-  provisioner "local-exec" {
-    environment = {
-      AWS_PAGER = ""
+  build_config = {
+    code_config = {
+      s3_object = {
+        bucket     = aws_s3_bucket.webapp.bucket
+        key        = aws_s3_object.webapp.key
+        version_id = aws_s3_object.webapp.version_id
+      }
     }
-    command = <<-EOT
-      set -euo pipefail
-      aws lambda-web deploy --create \
-        --name ${terraform_data.web_function.output.name} \
-        --code ${local.webapp_src_dir} \
-        --bucket-name ${aws_s3_bucket.webapp.bucket} \
-        --execution-role-arn ${time_sleep.webapp_role_propagation.triggers["role_arn"]} \
-        --env AGENT_RUNTIME_ARN=${aws_bedrockagentcore_agent_runtime.agent.agent_runtime_arn} \
-        --endpoint-name ${local.webapp_endpoint_name} \
-        --endpoint-type HomeRegion \
-        --auth-type ApplicationManaged
-
-      aws lambda-web get-web-function-endpoint \
-        --function-name ${terraform_data.web_function.output.name} \
-        --endpoint-name ${local.webapp_endpoint_name} \
-        --query domainName --output text > ${path.root}/../tmp/webapp_domain_name.txt
-    EOT
+    runtime_config = {
+      runtime = "nodejs24.x"
+    }
   }
 
-  depends_on = [
-    terraform_data.install_dependencies,
-    aws_s3_bucket_versioning.webapp,
-    aws_s3_bucket_policy.webapp,
-  ]
+  service_config = {
+    execution_role_arn = time_sleep.webapp_role_propagation.triggers["role_arn"]
+    environment_variables = {
+      AGENT_RUNTIME_ARN = aws_bedrockagentcore_agent_runtime.agent.agent_runtime_arn
+    }
+  }
+
+  depends_on = [aws_s3_bucket_policy.webapp]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
-# The deploy step writes the endpoint's domain to this file; depends_on defers reading it
-# until after a deploy whenever one is pending.
-data "local_file" "webapp_domain_name" {
-  filename = "${path.root}/../tmp/webapp_domain_name.txt"
+resource "awscc_lambda_web_function_endpoint" "webapp" {
+  function_name = awscc_lambda_web_function.webapp.function_name
+  endpoint_name = local.webapp_endpoint_name
+  endpoint_type = "HomeRegion"
+  auth_type     = "ApplicationManaged"
 
-  depends_on = [terraform_data.web_function_deploy]
+  revision_weights = [{
+    revision_id = awscc_lambda_web_function_revision.webapp.revision_id
+    weight      = 100
+  }]
 }
 
 output "webapp_url" {
-  value = "https://${trimspace(data.local_file.webapp_domain_name.content)}/"
+  value = "https://${awscc_lambda_web_function_endpoint.webapp.domain_name}/"
 }

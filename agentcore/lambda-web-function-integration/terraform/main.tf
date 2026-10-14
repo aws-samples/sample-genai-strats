@@ -9,10 +9,10 @@ resource "random_string" "prefix" {
 }
 
 locals {
-    region = data.aws_region.current.region
-    account_id = data.aws_caller_identity.current.account_id
-    prefix = random_string.prefix.id
-    project_name = "${local.prefix}-agentcore-lambda-web-function-integration"
+  region       = data.aws_region.current.region
+  account_id   = data.aws_caller_identity.current.account_id
+  prefix       = random_string.prefix.id
+  project_name = "${local.prefix}-agentcore-lambda-web-function-integration"
 }
 
 
