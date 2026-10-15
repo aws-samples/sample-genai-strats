@@ -11,7 +11,12 @@ app = BedrockAgentCoreApp()
 
 model_id = os.environ.get("MODEL_ID", "us.anthropic.claude-haiku-5-5")
 l.info(f"model_id={model_id}")
-model = BedrockModel(model_id=model_id, max_tokens=200)
+
+model = BedrockModel(
+    model_id=model_id,
+    max_tokens=200,
+    additional_request_fields={"thinking": {"type": "disabled"}},
+)
 
 def _message_text(message):
     """Concatenate the text blocks of a model message."""
