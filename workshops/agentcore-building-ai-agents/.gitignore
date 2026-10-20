@@ -14,9 +14,6 @@ build/
 src/lambdas/tool-web-search/*.dist-info/
 src/lambdas/tool-web-search/bin/
 
-# uv
-.python-version
-
 # Terraform
 .terraform/
 terraform.tfstate
