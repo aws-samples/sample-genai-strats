@@ -11,4 +11,5 @@ dependencies = [
     "strands-agents[otel]>=1.37.0",
     "strands-agents-tools>=0.5.1",
     "aws-opentelemetry-distro>=0.17.0",
+    "mcp==1.27.1"
 ]

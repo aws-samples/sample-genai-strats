@@ -55,6 +55,7 @@ resource "aws_bedrockagentcore_memory_strategy" "preferences" {
   memory_id   = aws_bedrockagentcore_memory.customer_support.id
   type        = "USER_PREFERENCE"
   namespaces  = ["support/customer/{actorId}/preferences/"]
+  depends_on  = [terraform_data.wait_0]
 }
 
 resource "aws_bedrockagentcore_memory_strategy" "semantic" {
@@ -63,13 +64,18 @@ resource "aws_bedrockagentcore_memory_strategy" "semantic" {
   memory_id   = aws_bedrockagentcore_memory.customer_support.id
   type        = "SEMANTIC"
   namespaces  = ["support/customer/{actorId}/semantic/"]
+  depends_on  = [terraform_data.wait_1]
 }
 
 resource "local_file" "memory_id" {
   content  = aws_bedrockagentcore_memory.customer_support.id
   filename = "${path.root}/../tmp/memory_id.txt"
+
+  depends_on = [terraform_data.wait_2]
 }
 
 output "memory_id" {
   value = aws_bedrockagentcore_memory.customer_support.id
+
+  depends_on = [terraform_data.wait_2]
 }

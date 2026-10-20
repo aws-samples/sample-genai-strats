@@ -74,7 +74,7 @@ resource "aws_bedrockagentcore_agent_runtime" "agent" {
       }
     }
   }
-
+  
   environment_variables = {
     AGENT_ZIP_ETAG           = filemd5("${path.root}/../tmp/agent_package/agent.zip")
     MEMORY_ID                = var.agentcore_memory_id
