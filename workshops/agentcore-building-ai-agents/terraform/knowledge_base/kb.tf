@@ -32,11 +32,16 @@ resource "aws_iam_role_policy" "bedrock_kb" {
                 Resource = "arn:aws:bedrock:${var.region}::foundation-model/amazon.titan-embed-text-v2:0"
             },
             {
+                # Read and write vectors in the Knowledge Base's vector index
                 Effect = "Allow"
                 Action = [
-                    "s3vectors:*"
+                    "s3vectors:PutVectors",
+                    "s3vectors:GetVectors",
+                    "s3vectors:DeleteVectors",
+                    "s3vectors:QueryVectors",
+                    "s3vectors:GetIndex",
                 ]
-                Resource = "*"
+                Resource = aws_s3vectors_index.kb_vectors.index_arn
             },
             {
                 Effect = "Allow"

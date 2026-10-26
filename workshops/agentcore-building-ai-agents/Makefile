@@ -79,16 +79,20 @@ test-gateway:
 		| jq .
 
 build-agent-package:
-# 	rm -rf ./tmp/agent_package
-# 	rm -rf ./tmp/agent_package/agent.zip
-	mkdir -p ./tmp
+# Start clean - pip install --target and zip add to existing content instead of replacing it
+	rm -rf ./tmp/agent_package
+	mkdir -p ./tmp/agent_package
+# Install the exact versions pinned in uv.lock, so everyone gets the same package
+	cd src/agent && \
+		uv export --frozen --no-hashes --no-dev --no-emit-project \
+			-o ./../../tmp/agent_package/requirements.txt
 	cd src/agent && \
 		uv pip install \
 			--python-platform aarch64-manylinux2014 \
 			--python-version 3.13 \
 			--target=./../../tmp/agent_package/dependencies \
 			--only-binary=:all: \
-			-r pyproject.toml
+			-r ./../../tmp/agent_package/requirements.txt
 	cd tmp/agent_package/dependencies && zip -r ../agent.zip .
 	cd src/agent && zip ./../../tmp/agent_package/agent.zip *.py tools/*.py
 
@@ -114,6 +118,16 @@ invoke-agent:
 test-remote-agent:
 	@echo "Testing remote agent..."
 	cd src/agent && uv run remote_agent_invoker.py
+
+run-evals:
+	@echo "Simulating customer conversations and running batch evaluations..."
+	$(eval AGENT_RUNTIME_ARN := $(shell cat ./tmp/agent_runtime_arn.txt))
+	AGENT_RUNTIME_ARN=$(AGENT_RUNTIME_ARN) uv run --frozen --script src/scripts/evals_runner.py
+
+show-evals-results:
+	@echo "Showing results of the latest batch evaluations..."
+	$(eval AGENT_RUNTIME_ARN := $(shell cat ./tmp/agent_runtime_arn.txt))
+	AGENT_RUNTIME_ARN=$(AGENT_RUNTIME_ARN) uv run --frozen --script src/scripts/evals_runner.py --results-only
 
 
 

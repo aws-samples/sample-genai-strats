@@ -6,13 +6,13 @@ MOCK_WARRANTY_DB = {
         "customer_email": "alice@example.com",
         "product": "Laptop Pro 15",
         "covered": True,
-        "expires": "2026-12-31",
+        "expires": "2028-12-31",
     },
     "DEF22222222": {
         "customer_email": "bob@example.com",
         "product": "Gaming Console Pro",
         "covered": True,
-        "expires": "2025-09-30",
+        "expires": "2028-12-31",
     },
     "GHI33333333": {
         "customer_email": "carol@example.com",
@@ -24,13 +24,13 @@ MOCK_WARRANTY_DB = {
         "customer_email": "dave@example.com",
         "product": "Smart Monitor 27",
         "covered": True,
-        "expires": "2027-03-01",
+        "expires": "2028-12-31",
     },
     "MNO33333333": {
         "customer_email": "eve@example.com",
         "product": "Gaming Console Pro",
         "covered": True,
-        "expires": "2026-06-30",
+        "expires": "2028-12-31",
     },
 }
 

@@ -33,7 +33,7 @@ resource "aws_cloudwatch_log_delivery_source" "runtime_traces" {
 }
 
 resource "aws_cloudwatch_log_delivery_destination" "runtime_traces" {
-  name = "${var.project_name}-runtime-traces"
+  name                      = "${var.project_name}-runtime-traces"
   delivery_destination_type = "XRAY"
 }
 

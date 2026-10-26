@@ -1,5 +1,6 @@
 variable "project_name" {}
 variable "region" {}
+variable "account_id" {}
 variable "agentcore_memory_id" {}
 variable "tech_support_knowledgebase_id" {}
 

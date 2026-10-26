@@ -31,8 +31,6 @@ resource "aws_iam_role_policy" "gateway_invoke_lambda" {
           "logs:PutLogEvents",
           "logs:DescribeLogGroups",
           "logs:DescribeLogStreams",
-          "xray:PutTraceSegments",
-          "xray:PutTelemetryRecords"
         ]
 
         Resource = "*"

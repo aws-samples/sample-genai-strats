@@ -2,21 +2,21 @@
 # module "knowledge_base" {
 #   source       = "./knowledge_base"
 #   project_name = local.project_name
-#   region       = data.aws_region.current.region
+#   region       = local.region
 # }
 
 # --- Module 3: Uncomment to deploy AgentCore Memory
 # module "memory" {
 #   source       = "./memory"
 #   project_name = local.project_name
-#   region       = data.aws_region.current.region
+#   region       = local.region
 # }
 
 # --- Module 4: Uncomment to deploy AgentCore Gateway
 # module "gateway" {
 #   source                        = "./gateway"
 #   project_name                  = local.project_name
-#   region                        = data.aws_region.current.region
+#   region                        = local.region
 # }
 
 # --- Module 5: Uncomment to deploy AgentCore Identity
@@ -32,11 +32,21 @@
 # module "runtime" {
 #   source                        = "./runtime"
 #   project_name                  = local.project_name
-#   region                        = data.aws_region.current.region
+#   region                        = local.region
+#   account_id                    = local.account_id
 #   agentcore_memory_id           = module.memory.memory_id
 #   tech_support_knowledgebase_id = module.knowledge_base.kb_id
 #   gateway_url                   = module.gateway.gateway_url
 #   cognito_scope                 = module.gateway.cognito_scope
 #   credential_provider_name      = module.identity.credential_provider_name
 #   workload_identity_name        = module.identity.workload_identity_name
+# }
+
+# --- Module 7: Uncomment to deploy AgentCore Evaluations
+# module "evals" {
+#   source           = "./evals"
+#   project_name     = local.project_name
+#   region           = local.region
+#   account_id       = local.account_id
+#   agent_runtime_id = module.runtime.agent_runtime_id
 # }

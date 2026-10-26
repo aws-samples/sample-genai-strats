@@ -1,5 +1,16 @@
 locals {
   project_name_underscore = replace(var.project_name, "-", "_")
+
+  # Must match the model_id in src/agent/agent.py
+  agent_model_id = "us.anthropic.claude-haiku-5-5"
+
+  # ARNs of the resources the agent uses, built from their IDs and names
+  memory_arn              = "arn:aws:bedrock-agentcore:${var.region}:${var.account_id}:memory/${var.agentcore_memory_id}"
+  knowledge_base_arn      = "arn:aws:bedrock:${var.region}:${var.account_id}:knowledge-base/${var.tech_support_knowledgebase_id}"
+  workload_directory_arn  = "arn:aws:bedrock-agentcore:${var.region}:${var.account_id}:workload-identity-directory/default"
+  workload_identity_arn   = "${local.workload_directory_arn}/workload-identity/${var.workload_identity_name}"
+  token_vault_arn         = "arn:aws:bedrock-agentcore:${var.region}:${var.account_id}:token-vault/default"
+  credential_provider_arn = "${local.token_vault_arn}/oauth2credentialprovider/${var.credential_provider_name}"
 }
 
 resource "aws_iam_role" "agent" {
@@ -15,44 +26,115 @@ resource "aws_iam_role" "agent" {
   })
 }
 
-data "aws_caller_identity" "current" {}
-
 resource "aws_iam_role_policy" "agent" {
   role = aws_iam_role.agent.id
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
+        # To subscribe to Bedrock Models
         Effect = "Allow"
         Action = [
-          # To subscribe to Bedrock Models
           "aws-marketplace:Subscribe",
           "aws-marketplace:ViewSubscriptions",
           "aws-marketplace:Unsubscribe",
-
-          # To invoke Bedrock Models
-          "bedrock:InvokeModel",
-          "bedrock:InvokeModelWithResponseStream",
-
-          # To use Bedrock Knowledge Base and AgentCore Memory
-          "bedrock:*",
-          "bedrock-agentcore:*",
-
-          # To send telemetry to CloudWatch
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents",
-          "logs:DescribeLogGroups",
-          "logs:DescribeLogStreams",
-          "xray:PutTraceSegments",
-          "xray:PutTelemetryRecords",
         ]
         Resource = "*"
       },
       {
+        # To invoke the agent's model. The cross-region inference profile routes requests
+        # to the foundation model in other US regions, so both are needed.
+        Effect = "Allow"
+        Action = [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream",
+        ]
+        Resource = [
+          "arn:aws:bedrock:${var.region}:${var.account_id}:inference-profile/${local.agent_model_id}",
+          "arn:aws:bedrock:*::foundation-model/${trimprefix(local.agent_model_id, "us.")}",
+        ]
+      },
+      {
+        # To retrieve technical support documents from the Knowledge Base
+        Effect   = "Allow"
+        Action   = ["bedrock:Retrieve"]
+        Resource = local.knowledge_base_arn
+      },
+      {
+        # To read and write conversations in AgentCore Memory
+        Effect = "Allow"
+        Action = [
+          "bedrock-agentcore:CreateEvent",
+          "bedrock-agentcore:GetEvent",
+          "bedrock-agentcore:ListEvents",
+          "bedrock-agentcore:RetrieveMemoryRecords",
+        ]
+        Resource = local.memory_arn
+      },
+      {
+        # To get the agent's workload access token from AgentCore Identity
+        Effect = "Allow"
+        Action = [
+          "bedrock-agentcore:GetWorkloadAccessToken",
+          "bedrock-agentcore:GetWorkloadAccessTokenForJWT",
+          "bedrock-agentcore:GetWorkloadAccessTokenForUserId",
+        ]
+        Resource = [
+          local.workload_directory_arn,
+          local.workload_identity_arn,
+        ]
+      },
+      {
+        # To exchange the workload access token for a gateway access token from the credential provider
+        Effect = "Allow"
+        Action = ["bedrock-agentcore:GetResourceOauth2Token"]
+        Resource = [
+          local.workload_directory_arn,
+          local.workload_identity_arn,
+          local.token_vault_arn,
+          local.credential_provider_arn,
+        ]
+      },
+      {
+        # To write the agent's logs
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:DescribeLogStreams",
+        ]
+        Resource = "arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/bedrock-agentcore/runtimes/*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["logs:CreateLogStream", "logs:PutLogEvents"]
+        Resource = "arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/bedrock-agentcore/runtimes/*:log-stream:*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["logs:DescribeLogGroups"]
+        Resource = "arn:aws:logs:${var.region}:${var.account_id}:log-group:*"
+      },
+      {
+        # To send traces and metrics. X-Ray doesn't support resource-level permissions.
+        Effect = "Allow"
+        Action = [
+          "xray:PutTraceSegments",
+          "xray:PutTelemetryRecords",
+          "xray:GetSamplingRules",
+          "xray:GetSamplingTargets",
+        ]
+        Resource = "*"
+      },
+      {
+        Effect    = "Allow"
+        Action    = "cloudwatch:PutMetricData"
+        Resource  = "*"
+        Condition = { StringEquals = { "cloudwatch:namespace" = "bedrock-agentcore" } }
+      },
+      {
         Effect   = "Allow"
         Action   = ["secretsmanager:GetSecretValue"]
-        Resource = "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:*${var.credential_provider_name}*"
+        Resource = "arn:aws:secretsmanager:${var.region}:${var.account_id}:secret:*${var.credential_provider_name}*"
       }
     ]
   })
@@ -74,7 +156,7 @@ resource "aws_bedrockagentcore_agent_runtime" "agent" {
       }
     }
   }
-  
+
   environment_variables = {
     AGENT_ZIP_ETAG           = filemd5("${path.root}/../tmp/agent_package/agent.zip")
     MEMORY_ID                = var.agentcore_memory_id
@@ -100,18 +182,11 @@ output "runtime_arn" {
   value = aws_bedrockagentcore_agent_runtime.agent
 }
 
+output "agent_runtime_id" {
+  value = aws_bedrockagentcore_agent_runtime.agent.agent_runtime_id
+}
+
 resource "local_file" "agent_runtime_arn" {
   content  = local.agent_runtime_arn
   filename = "${path.root}/../tmp/agent_runtime_arn.txt"
 }
-
-# output "runtime_url" {
-#   value = local.agent_runtime_url
-# }
-
-# resource "local_file" "agent_runtime_url" {
-#   content  = local.agent_runtime_url
-#   filename = "${path.root}/../tmp/agent_runtime_url.txt"
-# }
-
-

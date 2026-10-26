@@ -9,7 +9,7 @@ l = get_logger("memory_config")
 
 MEMORY_ID = os.environ.get("MEMORY_ID")
 l.info(f"ℹ️ MEMORY_ID={MEMORY_ID}")
-ACTOR_ID = "customer-123"   # In production this comes from the authenticated user identity
+ACTOR_ID = "customer-123"   # Hardcoded for simplicity. In real setup this would come from authenticated user's identity
 
 def get_session_manager(session_id):
     if MEMORY_ID:
