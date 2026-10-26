@@ -2,7 +2,7 @@ locals {
   project_name_underscore = replace(var.project_name, "-", "_")
 
   # Must match the model_id in src/agent/agent.py
-  agent_model_id = "us.anthropic.claude-haiku-5-5"
+  agent_model_id = "us.anthropic.claude-sonnet-4-6"
 
   # ARNs of the resources the agent uses, built from their IDs and names
   memory_arn              = "arn:aws:bedrock-agentcore:${var.region}:${var.account_id}:memory/${var.agentcore_memory_id}"

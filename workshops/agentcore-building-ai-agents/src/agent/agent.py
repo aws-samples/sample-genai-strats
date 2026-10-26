@@ -23,7 +23,7 @@ from mcp_client import mcp_tools_list
 
 l = get_logger(__name__)
 
-model = BedrockModel(model_id="us.anthropic.claude-haiku-5-5")
+model = BedrockModel(model_id="us.anthropic.claude-sonnet-4-6")
 
 tools = [
     get_return_policy, 
