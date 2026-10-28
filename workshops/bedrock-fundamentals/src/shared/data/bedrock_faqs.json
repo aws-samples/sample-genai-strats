@@ -33,7 +33,7 @@
   },
   {
     "question": "Is my data used to train the models?",
-    "answer": "No. Amazon Bedrock doesn't store or log your prompts and responses for training, and doesn't share them with model providers. Your data stays within the AWS geography of the inference profile you use, for example the US for profile IDs that start with \"us.\""
+    "answer": "No. Amazon Bedrock doesn't share your prompts or model outputs with model providers, and they aren't used to train Amazon Nova, Amazon Titan, or third-party models. With a geographic inference profile, such as one that starts with \"us.\", requests are processed within that geography."
   },
   {
     "question": "How does Amazon Bedrock protect my data?",
@@ -48,7 +48,7 @@
     "answer": "Amazon Bedrock Guardrails let you implement safeguards for your generative AI applications based on your use cases and responsible AI policies. A guardrail can block harmful content, deny topics, filter words, mask or block sensitive information, detect prompt attacks, and check that responses are grounded in your source data. You can use the same guardrail with any model."
   },
   {
-    "question": "What can you do with Guardrails for Amazon Bedrock?",
+    "question": "What can you do with Amazon Bedrock Guardrails?",
     "answer": "With guardrails you can configure content filters for hate, insults, sexual content, violence, and misconduct; block prompt attacks such as jailbreaks and prompt injection; define denied topics in natural language; block specific words and profanity; mask or block personally identifiable information like names, emails, and phone numbers, or custom patterns defined with regular expressions; and check responses for grounding and relevance. Guardrails can be applied to model calls, to agents and knowledge bases, or to any text with the ApplyGuardrail API."
   },
   {
@@ -60,7 +60,7 @@
     "answer": "While you work on a guardrail you use its working draft, version DRAFT. When you're happy with the configuration you create a numbered version, which can't be changed. Applications should use a numbered version, so changes to the draft don't affect them."
   },
   {
-    "question": "What are Knowledge Bases for Amazon Bedrock?",
+    "question": "What are Amazon Bedrock Knowledge Bases?",
     "answer": "Amazon Bedrock Knowledge Bases is a fully managed retrieval-augmented generation (RAG) capability. It connects to your data sources such as Amazon S3, splits documents into chunks, creates embeddings, and stores them in a vector store. At query time it retrieves the most relevant chunks and can pass them to a model to generate an answer with citations."
   },
   {

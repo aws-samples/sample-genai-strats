@@ -1,15 +1,15 @@
 """
 Lab F-4: Inference parameters and switching models.
 
-Because Converse uses the same format for supported models, switching models only means changing the
-model ID. Try the same prompt with a few models, and change the inference parameters below to see
-how they affect the response.
+Because Converse uses the same format for supported models, switching models usually only means
+changing the model ID. Try the same prompt with a few models, and change the inference parameters
+below to see how they affect the response.
 
 Run from src/: [MODEL_ID=<model id>] [PROMPT="<prompt>"] uv run 01_foundational_concepts/f4_inference_parameters.py
 Examples:
   MODEL_ID=us.amazon.nova-pro-v1:0 uv run 01_foundational_concepts/f4_inference_parameters.py
   MODEL_ID=us.meta.llama3-3-70b-instruct-v1:0 uv run 01_foundational_concepts/f4_inference_parameters.py
-  MODEL_ID=mistral.mixtral-8x7b-instruct-v0:1 PROMPT="Please write a limerick:" uv run 01_foundational_concepts/f4_inference_parameters.py
+  MODEL_ID=us.amazon.nova-2-lite-v1:0 PROMPT="Please write a limerick:" uv run 01_foundational_concepts/f4_inference_parameters.py
 """
 import os
 

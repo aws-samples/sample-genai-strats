@@ -49,7 +49,7 @@ def get_tools():
         {
             "toolSpec": {
                 "name": "get_amazon_bedrock_information",
-                "description": "Retrieve information about Amazon Bedrock, a managed service for hosting generative AI models.",
+                "description": "Retrieve information about Amazon Bedrock, a fully managed service that gives you access to foundation models through a single API.",
                 "inputSchema": {
                     "json": {
                         "type": "object",

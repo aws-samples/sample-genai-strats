@@ -38,7 +38,7 @@ def get_response_from_model(prompt_content, image_bytes):
             {"text": "Image 1:"},
             {
                 "image": {
-                    "format": get_image_format(image_bytes),
+                    "format": get_image_format(image_bytes), # jpeg, png, gif etc.
                     "source": {"bytes": image_bytes},  # raw bytes, no base64 encoding needed
                 }
             },
