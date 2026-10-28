@@ -1,0 +1,40 @@
+# Runtime outputs
+tmp/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Terraform
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+*.tfplan
+
+# Environment files
+.env
+.env.*
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# macOS
+.DS_Store
+
+# Editor swap files and logs
+*.swp
+*.log
+
+# AI assistant context and memory (has account details, not for publishing).
+# Both spellings, because git only matches case-insensitively when core.ignorecase is true.
+.claude/
+CLAUDE.md
+claude.md
+
+# Working notes and test reports (files starting with "_" in this directory)
+/_*

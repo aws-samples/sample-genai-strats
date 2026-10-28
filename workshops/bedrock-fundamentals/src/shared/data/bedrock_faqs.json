@@ -1,0 +1,126 @@
+[
+  {
+    "question": "What is Amazon Bedrock?",
+    "answer": "Amazon Bedrock is a fully managed service that offers a choice of foundation models from leading AI companies, including Amazon, Anthropic, Meta, Mistral AI, Cohere, and others, through a single API. It also provides the capabilities you need to build generative AI applications with security, privacy, and responsible AI."
+  },
+  {
+    "question": "Do I need to manage any infrastructure to use Amazon Bedrock?",
+    "answer": "No. Amazon Bedrock is serverless. You don't provision or manage any servers or GPUs. You call the models through an API and pay for what you use."
+  },
+  {
+    "question": "Which models are available in Amazon Bedrock?",
+    "answer": "Amazon Bedrock offers models for text generation, chat, reasoning, embeddings, and image generation. Model families include Amazon Nova and Amazon Titan, Anthropic Claude, Meta Llama, Mistral AI, Cohere Command and Embed, and models from other providers. The list of models and the regions they're available in changes over time, so check the Amazon Bedrock console or the ListFoundationModels API for the current list."
+  },
+  {
+    "question": "How do I choose a model?",
+    "answer": "There's no single best model. Each model has different strengths, speed, and price. Try several models with prompts from your use case and compare the quality, latency, and cost. You can also use different models for different tasks in the same application, for example a small model for classification and a larger model for writing long answers. Amazon Bedrock model evaluation can help you compare models with your own data."
+  },
+  {
+    "question": "What is the Converse API?",
+    "answer": "The Converse API is a consistent interface for sending messages to any text model in Amazon Bedrock. Requests and responses use the same format for every model, so you can switch models by changing the model ID. Converse supports multi-turn conversations, system prompts, images and documents, tool use, and guardrails. ConverseStream returns the response as a stream."
+  },
+  {
+    "question": "What is the difference between InvokeModel and Converse?",
+    "answer": "InvokeModel takes a request body in each model provider's own format, so the code changes when you switch providers. Converse uses one format for all text models. InvokeModel is still needed for models that Converse doesn't cover, such as embeddings and image generation models."
+  },
+  {
+    "question": "What is cross-region inference?",
+    "answer": "Cross-region inference routes your requests across several AWS regions in a geography to give you more throughput during peaks. You use it by calling an inference profile, whose ID starts with a geography prefix such as us., eu., or apac., instead of a model ID. Some newer models are only available through inference profiles."
+  },
+  {
+    "question": "How is Amazon Bedrock priced?",
+    "answer": "With on-demand pricing you pay per input and output token for text models, per image for image models, and there's no upfront commitment. Batch inference processes large sets of prompts asynchronously at a lower price. Provisioned Throughput gives you dedicated capacity for a fixed hourly price, and is required for some custom models."
+  },
+  {
+    "question": "Is my data used to train the models?",
+    "answer": "No. Amazon Bedrock doesn't store or log your prompts and responses for training, and doesn't share them with model providers. Your data stays within the AWS geography of the inference profile you use, for example the US for profile IDs that start with \"us.\""
+  },
+  {
+    "question": "How does Amazon Bedrock protect my data?",
+    "answer": "Data is encrypted in transit and at rest, and you can use your own AWS KMS keys. You can connect to Amazon Bedrock from your VPC with AWS PrivateLink, so traffic doesn't go over the internet. Access is controlled with AWS IAM, and API calls are logged in AWS CloudTrail."
+  },
+  {
+    "question": "How do I control who can use which models?",
+    "answer": "Use AWS IAM policies. You can allow or deny bedrock:InvokeModel and bedrock:InvokeModelWithResponseStream for specific model or inference profile ARNs, so users and applications can only call the models you approve. Service control policies can apply the same rules across accounts in an organization."
+  },
+  {
+    "question": "What are Amazon Bedrock Guardrails?",
+    "answer": "Amazon Bedrock Guardrails let you implement safeguards for your generative AI applications based on your use cases and responsible AI policies. A guardrail can block harmful content, deny topics, filter words, mask or block sensitive information, detect prompt attacks, and check that responses are grounded in your source data. You can use the same guardrail with any model."
+  },
+  {
+    "question": "What can you do with Guardrails for Amazon Bedrock?",
+    "answer": "With guardrails you can configure content filters for hate, insults, sexual content, violence, and misconduct; block prompt attacks such as jailbreaks and prompt injection; define denied topics in natural language; block specific words and profanity; mask or block personally identifiable information like names, emails, and phone numbers, or custom patterns defined with regular expressions; and check responses for grounding and relevance. Guardrails can be applied to model calls, to agents and knowledge bases, or to any text with the ApplyGuardrail API."
+  },
+  {
+    "question": "Can I use guardrails with models outside of Amazon Bedrock?",
+    "answer": "Yes. The ApplyGuardrail API evaluates any text against a guardrail without calling a model, so you can use the same guardrail with self-hosted models, models from other providers, or to check text in any application."
+  },
+  {
+    "question": "What is a guardrail version?",
+    "answer": "While you work on a guardrail you use its working draft, version DRAFT. When you're happy with the configuration you create a numbered version, which can't be changed. Applications should use a numbered version, so changes to the draft don't affect them."
+  },
+  {
+    "question": "What are Knowledge Bases for Amazon Bedrock?",
+    "answer": "Amazon Bedrock Knowledge Bases is a fully managed retrieval-augmented generation (RAG) capability. It connects to your data sources such as Amazon S3, splits documents into chunks, creates embeddings, and stores them in a vector store. At query time it retrieves the most relevant chunks and can pass them to a model to generate an answer with citations."
+  },
+  {
+    "question": "What is retrieval-augmented generation?",
+    "answer": "Retrieval-augmented generation (RAG) gives a model information it wasn't trained on. Before calling the model, the application searches a data store for content related to the question, and adds that content to the prompt. The model then answers based on the retrieved content, which reduces made-up answers and lets you use private or recent data."
+  },
+  {
+    "question": "Which vector stores can Knowledge Bases use?",
+    "answer": "Knowledge Bases can create and manage a vector store for you, or use an existing one. Supported vector stores include Amazon OpenSearch Serverless, Amazon S3 Vectors, Amazon Aurora PostgreSQL, Amazon Neptune Analytics, and third-party options such as Pinecone, Redis Enterprise Cloud, and MongoDB Atlas."
+  },
+  {
+    "question": "What are embeddings?",
+    "answer": "Embeddings are lists of numbers, called vectors, that represent the meaning of text or images. Content with similar meaning gets vectors that are close to each other, so you can search by meaning rather than by keywords. Amazon Bedrock offers embeddings models such as Amazon Titan Text Embeddings, Amazon Titan Multimodal Embeddings, Amazon Nova Multimodal Embeddings, and Cohere Embed."
+  },
+  {
+    "question": "What is Amazon Titan Multimodal Embeddings?",
+    "answer": "Amazon Titan Multimodal Embeddings creates embeddings from text, images, or both, in the same vector space. This lets you search an image collection with a text description, find images that are similar to another image, or combine text and an image in one query."
+  },
+  {
+    "question": "What is tool use?",
+    "answer": "Tool use, also called function calling, lets a model ask your application to run a function. You describe each tool with a name, a description, and a JSON schema for its input. When the model needs a tool, it returns the tool name and input; your code runs the tool and sends the result back, and the model uses it to write its answer. Tool use is also a reliable way to get JSON output that follows a schema."
+  },
+  {
+    "question": "Can I customize models with my own data?",
+    "answer": "Yes. Amazon Bedrock supports fine-tuning with labeled examples, continued pre-training with unlabeled data for some models, reinforcement fine-tuning, and distillation, where a larger model teaches a smaller, faster model. Customized models are private to your account. You can also import your own model weights for supported architectures with Custom Model Import."
+  },
+  {
+    "question": "What is model distillation?",
+    "answer": "Model distillation transfers knowledge from a larger, more capable teacher model to a smaller student model. The student model can then perform a specific task with similar accuracy, but faster and at a lower cost."
+  },
+  {
+    "question": "What is batch inference?",
+    "answer": "Batch inference processes a large number of prompts asynchronously. You put the prompts in a file in Amazon S3, start a batch job, and Amazon Bedrock writes the results back to S3. Batch inference costs less than on-demand inference and suits workloads that don't need an immediate response, such as summarizing large document collections."
+  },
+  {
+    "question": "What is prompt caching?",
+    "answer": "Prompt caching lets supported models reuse the processing of a prompt prefix that repeats across requests, such as a long system prompt or document. Cached tokens are cheaper and faster to process, which reduces cost and latency for applications that send the same context many times."
+  },
+  {
+    "question": "What is Amazon Bedrock model evaluation?",
+    "answer": "Model evaluation helps you compare models and pick the best one for your use case. You can run automatic evaluations with built-in metrics, use another model as a judge, or use human reviewers. Evaluations can also measure the quality of a knowledge base's retrieval and generated answers."
+  },
+  {
+    "question": "What are Amazon Bedrock Agents and Amazon Bedrock AgentCore?",
+    "answer": "Agents use a model to plan and complete multi-step tasks by calling tools, APIs, and knowledge bases. Amazon Bedrock Agents is a managed way to configure an agent without writing orchestration code. Amazon Bedrock AgentCore provides the building blocks to run and operate agents built with any framework and any model: runtime, memory, gateway, identity, observability, and evaluations."
+  },
+  {
+    "question": "How do I monitor Amazon Bedrock usage?",
+    "answer": "Amazon Bedrock publishes metrics such as invocations, latency, input and output token counts, and throttles to Amazon CloudWatch. You can turn on model invocation logging to store full requests and responses in CloudWatch Logs or Amazon S3. AWS CloudTrail records API calls for auditing."
+  },
+  {
+    "question": "What are service quotas in Amazon Bedrock?",
+    "answer": "Each model has quotas for requests per minute and tokens per minute in each region. If you go over a quota, requests are throttled. You can view quotas and request increases in the Service Quotas console. Cross-region inference and Provisioned Throughput can give you more capacity."
+  },
+  {
+    "question": "What image models does Amazon Bedrock offer?",
+    "answer": "Amazon Bedrock offers image models from Stability AI, such as Stable Image Core, Stable Image Ultra, and Stable Diffusion 3.5 Large. They can generate images from text, and Stability AI Image Services can edit images with inpainting and outpainting, remove backgrounds, upscale images, and transfer styles."
+  },
+  {
+    "question": "Can models read documents and images?",
+    "answer": "Yes. Multimodal models in Amazon Bedrock, such as Anthropic Claude and Amazon Nova, accept images and documents in the Converse API. You can ask questions about a chart, extract text from a photo, or summarize a PDF by sending its bytes in a document content block."
+  }
+]
