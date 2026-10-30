@@ -1,17 +1,3 @@
-## My Project
+# GenAI Samples
 
-TODO: Fill this README out!
-
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
-
-## Security
-
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
-
-## License
-
-This library is licensed under the MIT-0 License. See the LICENSE file.
-
+This repository containers a collection of samples and workshops illustrating how to use AWS Gen AI services, such as Amazon Bedrock and Amazon Bedrock AgentCore
