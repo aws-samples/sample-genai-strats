@@ -1,5 +1,5 @@
 {
-  "name": "Sentinel Agent - anton1",
+  "name": "Sentinel Agent",
   "description": "An external agent running on Amazon Bedrock AgentCore integrated with Workday via MCP protocol",
   "provider": { "id": "Provider=SELF-BUILT" },
   "platform": { "id": "Platform=AMAZON_BEDROCK_AGENTCORE" },
