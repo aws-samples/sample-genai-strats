@@ -39,8 +39,8 @@ if agent_mode=="mcp":
 
     CLIENT_ID = os.environ.get("AGENT_MCP_CLIENT_ID")
     CLIENT_SECRET = os.environ.get("AGENT_MCP_CLIENT_SECRET")
-    AUTHORIZATION_ENDPOINT = os.environ.get("AGENT_MCP_AUTHORIZATION_ENDPOINT")
-    TOKEN_ENDPOINT = os.environ.get("AGENT_MCP_TOKEN_ENDPOINT")
+    AUTHORIZATION_ENDPOINT = os.environ.get("AGENT_MCP_AUTHORIZATION_ENDPOINT", "").replace("TENANT_ALIAS", WORKDAY_TENANT_ALIAS)
+    TOKEN_ENDPOINT = os.environ.get("AGENT_MCP_TOKEN_ENDPOINT", "").replace("TENANT_ALIAS", WORKDAY_TENANT_ALIAS)
     
     access_token_path = Path(__file__).parent.parent / "tmp" / "mcp_agent_access_token.txt"
 
@@ -52,8 +52,8 @@ elif agent_mode=="a2a":
 
     CLIENT_ID = os.environ.get("A2A_AGENT_CLIENT_ID")
     CLIENT_SECRET = os.environ.get("A2A_AGENT_CLIENT_SECRET")
-    AUTHORIZATION_ENDPOINT = os.environ.get("A2A_AGENT_AUTHORIZATION_ENDPOINT")
-    TOKEN_ENDPOINT = os.environ.get("A2A_AGENT_TOKEN_ENDPOINT")
+    AUTHORIZATION_ENDPOINT = os.environ.get("A2A_AGENT_AUTHORIZATION_ENDPOINT", "").replace("TENANT_ALIAS", WORKDAY_TENANT_ALIAS)
+    TOKEN_ENDPOINT = os.environ.get("A2A_AGENT_TOKEN_ENDPOINT", "").replace("TENANT_ALIAS", WORKDAY_TENANT_ALIAS)
     
     access_token_path = Path(__file__).parent.parent / "tmp" / "a2a_agent_access_token.txt"
 
@@ -61,7 +61,7 @@ else:
     print("NOOP")
 
 ACCESS_TOKEN = access_token_path.read_text().strip()
-MCP_ENDPOINT = os.environ.get("AGENT_MCP_ENDPOINT")
+MCP_ENDPOINT = os.environ.get("AGENT_MCP_ENDPOINT", "").replace("TENANT_ALIAS", WORKDAY_TENANT_ALIAS)
 A2A_AGENT_CARD_BASE_URL=os.environ.get("A2A_AGENT_CARD_BASE_URL").replace("TENANT_ALIAS", WORKDAY_TENANT_ALIAS)
 
 print(f"| CLIENT_ID={CLIENT_ID}")

@@ -6,7 +6,7 @@ from pathlib import Path
 
 dotenv.load_dotenv("./../workday.configuration")
 
-MCP_ENDPOINT = os.getenv("AGENT_MCP_ENDPOINT")
+MCP_ENDPOINT = os.getenv("AGENT_MCP_ENDPOINT", "").replace("TENANT_ALIAS", os.getenv("WORKDAY_TENANT_ALIAS", ""))
 ACCESS_TOKEN_PATH = Path("./../tmp/mcp_agent_access_token.txt")
 
 print(f"> MCP_ENDPOINT={MCP_ENDPOINT}")

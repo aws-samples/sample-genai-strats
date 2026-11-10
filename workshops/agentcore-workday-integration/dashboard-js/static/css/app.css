@@ -8,12 +8,46 @@ body {
   margin: 0 auto;
 }
 
+/* Logos are dark-on-transparent, so they sit on a light chip in the dark theme. */
+.logo-chip {
+  height: 100%;
+  margin-left: 16px;
+  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.logo-chip img {
+  height: 100%;
+  object-fit: contain;
+}
+
+.logo-chip .logo-x {
+  margin: 0 8px;
+  font-size: 1.1rem;
+  color: #888;
+  line-height: 1;
+}
+
 #chat-box {
+  position: relative;
   height: 65vh;
   overflow-y: auto;
-  background: #f8f9fa;
+  background: var(--bs-tertiary-bg);
   border-radius: 8px;
   padding: 1rem;
+}
+
+/* Shown in the middle of the chat until the first message */
+#chat-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bs-secondary-color);
 }
 
 .msg-user .bubble {
@@ -26,8 +60,9 @@ body {
 }
 
 .msg-bot .bubble {
-  background: #fff;
-  border: 1px solid #dee2e6;
+  background: var(--bs-secondary-bg);
+  color: var(--bs-body-color);
+  border: 1px solid var(--bs-border-color);
   display: inline-block;
   padding: .5rem 1rem;
   border-radius: 18px 18px 18px 4px;
@@ -41,10 +76,97 @@ body {
   flex-shrink: 0;
 }
 
+/* Tool calls the agent made, shown above the reply text */
+.msg-bot .tool-calls {
+  font-size: .85rem;
+  color: var(--bs-secondary-color);
+  margin-bottom: .25rem;
+}
+
+/* In-chat status while the agent works ("Thinking", "Calling <tool>") */
+.msg-bot .status {
+  font-size: .9rem;
+  color: var(--bs-secondary-color);
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.msg-bot .status + .reply-text:not(:empty),
+.msg-bot .reply-text:not(:empty) + .status {
+  margin-top: .35rem;
+}
+
+.typing {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: typing 1.2s infinite ease-in-out;
+}
+
+.typing span:nth-child(2) { animation-delay: .15s; }
+.typing span:nth-child(3) { animation-delay: .3s; }
+
+@keyframes typing {
+  0%, 80%, 100% { opacity: .25; transform: translateY(0); }
+  40% { opacity: 1; transform: translateY(-3px); }
+}
+
+/* Markdown in agent replies */
+.msg-bot .reply-text > :first-child { margin-top: 0; }
+.msg-bot .reply-text > :last-child { margin-bottom: 0; }
+.msg-bot .reply-text p,
+.msg-bot .reply-text ul,
+.msg-bot .reply-text ol { margin-bottom: .5rem; }
+.msg-bot .reply-text h1,
+.msg-bot .reply-text h2,
+.msg-bot .reply-text h3,
+.msg-bot .reply-text h4 { font-size: 1.1rem; font-weight: 600; margin: .75rem 0 .4rem; }
+.msg-bot .reply-text table {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin-bottom: .5rem;
+  font-size: .95rem;
+}
+.msg-bot .reply-text th,
+.msg-bot .reply-text td {
+  border: 1px solid var(--bs-border-color);
+  padding: .25rem .6rem;
+}
+.msg-bot .reply-text th { background: var(--bs-tertiary-bg); }
+.msg-bot .reply-text code {
+  background: var(--bs-tertiary-bg);
+  padding: .1rem .3rem;
+  border-radius: 4px;
+}
+.msg-bot .reply-text pre {
+  background: var(--bs-tertiary-bg);
+  padding: .5rem .75rem;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+.msg-bot .reply-text pre code { padding: 0; background: none; }
+.msg-bot .reply-text blockquote {
+  border-left: 3px solid var(--bs-border-color);
+  padding-left: .75rem;
+  color: var(--bs-secondary-color);
+}
+
+.msg-bot .reply-error {
+  color: var(--bs-danger-text-emphasis);
+}
+
 #overlay {
   position: fixed;
   inset: 0;
-  background: rgba(255, 255, 255, .85);
+  background: rgba(var(--bs-body-bg-rgb), .9);
   display: flex;
   align-items: center;
   justify-content: center;

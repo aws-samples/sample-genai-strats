@@ -3,3 +3,5 @@
 ![](./images//chat-screenshot.png)
 
 Please contact your Workday or AWS account team to run this workshop. 
+
+This workshop expects a Workday personal developer tenant (region `odp`), one per participant.

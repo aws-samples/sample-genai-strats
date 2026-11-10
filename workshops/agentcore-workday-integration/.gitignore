@@ -1,5 +1,6 @@
 # Temp outputs
 tmp/
+_plan.txt
 
 # Python
 __pycache__/
@@ -14,12 +15,15 @@ __pycache__/
 **/.terraform/
 *.tfstate
 *.tfstate.backup
+.terraform.tfstate.lock.info
 *.tfvars
-.terraform.lock.hcl
 
 # Generated files
 .env
 .env_backup
+
+# Personal Workday values (workday.configuration itself is the tracked template)
+workday.configuration.dev
 
 # OS
 .DS_Store
@@ -30,3 +34,6 @@ __pycache__/
 
 node_modules
 accp_debugger
+# Claude Code project memory
+.claude
+

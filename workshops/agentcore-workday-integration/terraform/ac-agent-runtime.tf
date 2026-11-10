@@ -25,28 +25,56 @@ resource "aws_iam_role_policy" "agent" {
           "aws-marketplace:Subscribe",
           "aws-marketplace:ViewSubscriptions",
           "aws-marketplace:Unsubscribe",
-
-          # To invoke Bedrock Models
-          "bedrock:InvokeModel",
-          "bedrock:InvokeModelWithResponseStream",
-
-          # To send telemetry to CloudWatch
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents",
-          "logs:DescribeLogGroups",
-          "logs:DescribeLogStreams",
-          "xray:PutTraceSegments",
-          "xray:PutTelemetryRecords",
         ]
         Resource = "*"
+      },
+      {
+        # To send telemetry to CloudWatch (this agent's runtime log groups only)
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:DescribeLogStreams",
+        ]
+        Resource = "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/bedrock-agentcore/runtimes/${local.agent_runtime_name}-*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+        ]
+        Resource = "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/bedrock-agentcore/runtimes/${local.agent_runtime_name}-*:log-stream:*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = "logs:DescribeLogGroups"
+        Resource = "arn:aws:logs:${local.region}:${local.account_id}:log-group:*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream",
+        ]
+        Resource = [
+          "arn:aws:bedrock:${local.region}:${local.account_id}:inference-profile/${local.bedrock_inference_profile_id}",
+          "arn:aws:bedrock:*::foundation-model/${local.bedrock_foundation_model_id}",
+        ]
       }
     ]
   })
 }
 
-resource "aws_bedrockagentcore_agent_runtime" "agent" {
+locals {
   agent_runtime_name = "${local.project_name_underscore}_agent"
+
+  # Must match the model_id in agent/agent.py.
+  bedrock_inference_profile_id = "us.anthropic.claude-sonnet-4-6"
+  bedrock_foundation_model_id  = "anthropic.claude-sonnet-4-6"
+}
+
+resource "aws_bedrockagentcore_agent_runtime" "agent" {
+  agent_runtime_name = local.agent_runtime_name
   role_arn           = aws_iam_role.agent.arn
 
   agent_runtime_artifact {

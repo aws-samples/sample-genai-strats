@@ -1,5 +1,5 @@
 {
-  "name": "Sentinel Agent",
+  "name": "Sentinel Agent - anton1",
   "description": "An external agent running on Amazon Bedrock AgentCore integrated with Workday via MCP protocol",
   "provider": { "id": "Provider=SELF-BUILT" },
   "platform": { "id": "Platform=AMAZON_BEDROCK_AGENTCORE" },
@@ -7,22 +7,22 @@
   "skills": [
     {
       "id": "skill1",
-      "name": "Skill 1: Inventory tools, active workers, open job postings",
-      "description": "Connect to Workday MCP, inventory tools, count active workers and open job postings.",
+      "name": "Skill 1: Inventory operatives, open positions, organizations",
+      "description": "Count active workers, open requisitions and internal job postings by job type, and list organizations.",
       "inputModes": [{ "type": "application/json" }],
       "outputModes": [{ "type": "application/json" }]
     },
     {
       "id": "skill2",
-      "name": "Skill 2: Map Active Mentorship Coverage",
-      "description": "Surface mentorship network.",
+      "name": "Skill 2: Map the recognition network",
+      "description": "Find a supervisory organization, list its members, and show which members have received feedback and badges.",
       "inputModes": [{ "type": "application/json" }],
       "outputModes": [{ "type": "application/json" }]
     },
     {
       "id": "skill3",
-      "name": "Skill 3: Reinforce the Network",
-      "description": "Fortify the mentorship network. First write to Workday.",
+      "name": "Skill 3: Reinforce the network",
+      "description": "Give an operative anytime feedback with a badge. First write to Workday.",
       "inputModes": [{ "type": "application/json" }],
       "outputModes": [{ "type": "application/json" }]
     }
@@ -32,15 +32,30 @@
       "skillId": "skill1",
       "executionMode": { "id": "Mode=Delegate" },
       "workdayResources": [
-        { 
-          "description": "Get Workers (staffing/workers/view)",
-          "tool_name": "getWorkers",
-          "agent_resource": { "id": "c2466b0778c610000cdf9abc4fbc000c" }
+        {
+          "description": "Find or list workers visible to the signed-in user, with current staffing details.",
+          "tool_name": "find_staffing_workers",
+          "agent_resource": { "id": "30aeb92af72e100063e2955a0eff0000" }
         },
         {
-          "description": "Get Job Postings (recruiting/jobPostings/view)",
-          "tool_name": "getJobPostings",
+          "description": "Read-only. Find, browse or filter job requisitions the signed-in user can access.",
+          "tool_name": "find_job_requisitions",
+          "agent_resource": { "id": "391e295107911000198248d9408a0000" }
+        },
+        {
+          "description": "Read-only. Browse and filter internal job postings visible to the signed-in user.",
+          "tool_name": "find_internal_job_postings",
           "agent_resource": { "id": "3557e59df3cf1000168bed1c1a0a0000" }
+        },
+        {
+          "description": "Read-only. List the job types that can be used to filter internal job postings.",
+          "tool_name": "list_internal_job_posting_job_types",
+          "agent_resource": { "id": "2a52910438e41000220cc5840ea60000" }
+        },
+        {
+          "description": "Read-only. List organizations visible to the signed-in user (supervisory organizations, cost centers, hierarchies).",
+          "tool_name": "list_organizations",
+          "agent_resource": { "id": "0466c187aaa210001e8f275d5a120000" }
         }
       ]
     },
@@ -49,34 +64,24 @@
       "executionMode": { "id": "Mode=Delegate" },
       "workdayResources": [
         {
-          "description": "Get Supervisory Organizations (staffing/supervisoryOrganizations/view)",
-          "tool_name": "getSupervisoryOrganizations",
-          "agent_resource": { "id": "a02c2e1916fa100009e1ee01295d001d" }
+          "description": "Find supervisory organizations by search term, or retrieve a single one.",
+          "tool_name": "find_staffing_supervisory_organization",
+          "agent_resource": { "id": "5eafb95a0b43100025e3b68b4cac0000" }
         },
         {
-          "description": "Get Supervisory Organization Members (staffing/supervisoryOrganizations/members/view)",
-          "tool_name": "getSupervisoryOrganizationMembers",
-          "agent_resource": { "id": "ad3e317e08f810000ebaef7a87a5003b" }
+          "description": "List the filled positions in one supervisory organization, with each position's worker, title, job profile and location.",
+          "tool_name": "find_staffing_agent_supervisory_organization_members",
+          "agent_resource": { "id": "90df6b6d90cd100049bb663fb8110000" }
         },
         {
-          "description": "Get Worker Service Dates (staffing/workers/serviceDates/view)",
-          "tool_name": "getWorkerServiceDates",
-          "agent_resource": { "id": "6b1db753fd82100027d4d4b0f2cd001f" }
+          "description": "Read-only. List the anytime feedback a specific worker has received.",
+          "tool_name": "find_worker_anytime_feedback_received",
+          "agent_resource": { "id": "b9aceb430909100019e7724376310000" }
         },
         {
-          "description": "Get Mentorships (talentManagement/mentorships/view)",
-          "tool_name": "getMentorships",
-          "agent_resource": { "id": "96e7ee2167ea1000074ac1d67d180828" }
-        },
-        {
-          "description": "Get Org Chart (staffing/supervisoryOrganizations/orgChart/view)",
-          "tool_name": "getOrgChart",
-          "agent_resource": { "id": "643e3a1262971000055567b981030046" }
-        },
-        {
-          "description": "Get Interviews (recruiting/interviews/view)",
-          "tool_name": "getInterviews",
-          "agent_resource": { "id": "df78b8e577c910001f381909b55100e6" }
+          "description": "Retrieve feedback badges.",
+          "tool_name": "find_feedback_badges",
+          "agent_resource": { "id": "41eb647508cc10001172daa71e080000" }
         }
       ]
     },
@@ -85,9 +90,9 @@
       "executionMode": { "id": "Mode=Delegate" },
       "workdayResources": [
         {
-          "description": "Edit Mentorships (talentManagement/mentorships/edit/edit)",
-          "tool_name": "editMentorships",
-          "agent_resource": { "id": "d8a7d527cba210002bf03817fa8d0834" }
+          "description": "Give a worker anytime feedback (comment and badge).",
+          "tool_name": "create_anytime_feedback_events",
+          "agent_resource": { "id": "eb75070cf61c10001be53f0c493a0000" }
         }
       ]
     }

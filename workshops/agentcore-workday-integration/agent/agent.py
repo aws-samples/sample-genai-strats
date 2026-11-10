@@ -22,32 +22,47 @@ else:
     exit(1)
 
 app = BedrockAgentCoreApp()
-model = BedrockModel(model_id="us.anthropic.claude-sonnet-4-6")
+model = BedrockModel(model_id="us.anthropic.claude-sonnet-4-6", max_tokens=2048)
 
-async def process_prompt(payload):
-    print(f"> process_prompt")
+# Streams the response. AgentCore Runtime sends each yielded dict to the caller as one
+# Server-Sent Event ("data: {...}"):
+#   {"delta": "..."}   a piece of the response text
+#   {"tool": "..."}    the agent started calling a tool
+#   {"error": "..."}   something failed
+#   {"done": true}     the response is complete
+async def stream_prompt(payload):
+    print(f"> stream_prompt")
     user_id = payload.get("user_id", DEFAULT_TEST_USER_ID)
     prompt = payload.get("prompt")
     print(f"| user_id={user_id}")
     print(f"| payload={payload}")
 
-    session_manager = FileSessionManager(session_id=user_id)
-    tools = await build_tools(user_id)
+    try:
+        session_manager = FileSessionManager(session_id=user_id)
+        tools = await build_tools(user_id)
 
-    agent = Agent(
-        model=model,
-        system_prompt=SYSTEM_PROMPT,
-        session_manager=session_manager,
-        tools=tools,
-    )
+        agent = Agent(
+            model=model,
+            system_prompt=SYSTEM_PROMPT,
+            session_manager=session_manager,
+            tools=tools,
+        )
 
-    response = agent(prompt)
+        tool_use_ids = set()
+        async for event in agent.stream_async(prompt):
+            if "data" in event:
+                yield {"delta": event["data"]}
+            tool_use = event.get("current_tool_use")
+            if tool_use and tool_use.get("toolUseId") not in tool_use_ids:
+                tool_use_ids.add(tool_use.get("toolUseId"))
+                print(f"| tool={tool_use.get('name')}")
+                yield {"tool": tool_use.get("name")}
+    except Exception as e:
+        print(f"| stream_prompt error: {type(e).__name__}: {e}")
+        yield {"error": f"{type(e).__name__}: {e}"}
+        return
 
-    # print("> got response")
-    # print(response)
-
-    text = response.message["content"][0]["text"]
-    return {"status": "ok", "response": text}
+    yield {"done": True}
 
 @app.entrypoint
 async def app_entrypoint(payload, context):
@@ -63,8 +78,10 @@ async def app_entrypoint(payload, context):
     if cmd == "completeAuth":
         return await identity_helper.complete_auth(payload)
 
+    # Returns an async generator (not awaited), so AgentCore streams it back as SSE.
+    # app_entrypoint itself must not use `yield`, or every command would become a stream.
     if cmd == "prompt":
-        return await process_prompt(payload)
+        return stream_prompt(payload)
     
     return {
         "error": "unknown command"

@@ -15,7 +15,10 @@ export const SESSION_ID = randomUUID();
 console.log(`AGENT_RUNTIME_ARN=${AGENT_RUNTIME_ARN}`);
 console.log(`SESSION_ID=${SESSION_ID}`);
 
-export async function invokeAgent(payload) {
+// Invokes the agent. A JSON response is parsed and returned.
+// A streaming response (text/event-stream) is passed to onEvent one event at a time,
+// and invokeAgent returns { streamed: true } once the stream ends.
+export async function invokeAgent(payload, onEvent) {
   payload.user_id = USER_ID;
   const cmd = new InvokeAgentRuntimeCommand({
     agentRuntimeArn: AGENT_RUNTIME_ARN,
@@ -25,7 +28,28 @@ export async function invokeAgent(payload) {
     runtimeUserId: USER_ID,
   });
   const response = await client.send(cmd);
-  const responseText = await response.response.transformToString()
-  const responseJson = JSON.parse(responseText);
-  return responseJson;
+
+  if ((response.contentType || "").includes("text/event-stream")) {
+    await readEventStream(response.response, onEvent || (() => {}));
+    return { streamed: true };
+  }
+
+  const responseText = await response.response.transformToString();
+  return JSON.parse(responseText);
+}
+
+// Parses Server-Sent Events ("data: {...}" lines, events separated by a blank line).
+async function readEventStream(stream, onEvent) {
+  const decoder = new TextDecoder();
+  let buffer = "";
+  for await (const chunk of stream) {
+    buffer += decoder.decode(chunk, { stream: true });
+    const events = buffer.split("\n\n");
+    buffer = events.pop();
+    for (const event of events) {
+      for (const line of event.split("\n")) {
+        if (line.startsWith("data: ")) onEvent(JSON.parse(line.slice(6)));
+      }
+    }
+  }
 }

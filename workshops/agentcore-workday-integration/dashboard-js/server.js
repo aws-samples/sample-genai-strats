@@ -51,8 +51,8 @@ app.post("/app/api/chat", async (req, res) => {
   const keepAlive = setInterval(() => res.write("event: keepAlive\ndata: {}\n\n"), 5000);
 
   try {
-    const response = await handleMessage(message);
-    res.write(`data: ${JSON.stringify({ response })}\n\n`);
+    // Forward each agent event ({delta}, {tool}, {error}, {done}) to the browser as it arrives.
+    await handleMessage(message, (event) => res.write(`data: ${JSON.stringify(event)}\n\n`));
   } catch (e) {
     console.error("chat error", e);
     res.write(`data: ${JSON.stringify({ error: e.message })}\n\n`);

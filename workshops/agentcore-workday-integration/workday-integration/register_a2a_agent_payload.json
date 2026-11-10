@@ -1,0 +1,36 @@
+{
+  "name": "AWSome HR Agent - A2A",
+  "description": "An external agent running on Amazon Bedrock AgentCore that delegates HR questions to Workday's Self-Service Agent over the A2A protocol",
+  "provider": { "id": "Provider=SELF-BUILT" },
+  "platform": { "id": "Platform=AMAZON_BEDROCK_AGENTCORE" },
+  "url": "https://aws.amazon.com",
+  "skills": [
+    {
+      "id": "self_service_delegation",
+      "name": "Delegate HR questions to Workday Self-Service Agent",
+      "description": "Send employee HR questions (time off, pay, job, department) to Workday's Self-Service Agent over A2A.",
+      "inputModes": [{ "type": "application/json" }],
+      "outputModes": [{ "type": "application/json" }]
+    }
+  ],
+  "workdayConfig": [
+    {
+      "skillId": "self_service_delegation",
+      "executionMode": { "id": "Mode=Delegate" },
+      "workdayResources": [
+        {
+          "description": "Workday Self-Service Agent (1P), reached over A2A.",
+          "tool_name": "Self-Service Agent",
+          "agent_resource": { "id": "6bfadd7c014610000dffae8d77c00000" }
+        }
+      ]
+    }
+  ],
+  "capabilities": {
+    "stateTransitionHistory": false,
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "supportsAuthenticatedExtendedCard": false,
+  "version": "v1"
+}

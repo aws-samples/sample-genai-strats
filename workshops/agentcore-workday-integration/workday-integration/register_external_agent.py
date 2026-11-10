@@ -11,8 +11,10 @@ dotenv.load_dotenv(
     dotenv_path=Path("./../workday.configuration")
 )
 
-input_path = Path(__file__).parent.parent / "workday-integration" / f"register_external_agent_payload.json"
-output_path = Path(__file__).parent.parent / "tmp" / f"external_agent_registration_response.json"
+# PAYLOAD selects the payload file, so Module 3 can register its own A2A agent (make register-a2a-agent).
+payload_name = os.getenv("PAYLOAD", "register_external_agent_payload.json")
+input_path = Path(__file__).parent.parent / "workday-integration" / payload_name
+output_path = Path(__file__).parent.parent / "tmp" / payload_name.replace("_payload.json", "_registration_response.json")
 
 # if output_path.exists():
 #     existing = json.loads(output_path.read_text())
@@ -28,7 +30,8 @@ output_path = Path(__file__).parent.parent / "tmp" / f"external_agent_registrati
 #     print(f"  3. Run 'make register-agent' again")
 #     exit(0)
 
-AGENT_REGISTRATION_ENDPOINT = "https://eu.agent.workday.com/asor/v1/agentDefinition"
+# Workday personal developer tenants (region odp) serve ASOR on api.odp.wcp.workday.com.
+AGENT_REGISTRATION_ENDPOINT = os.getenv("AGENT_REGISTRATION_ENDPOINT", "https://api.odp.wcp.workday.com/asor/v1/agentDefinition")
 WORKDAY_ACCESS_TOKEN = os.getenv("WORKDAY_ACCESS_TOKEN")
 WORKDAY_TENANT_ALIAS=os.getenv("WORKDAY_TENANT_ALIAS")
 

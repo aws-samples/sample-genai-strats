@@ -4,6 +4,11 @@ register-external-agent:
 		uv sync && \
 		uv run register_external_agent.py
 
+register-a2a-agent:
+	cd workday-integration && \
+		uv sync && \
+		PAYLOAD=register_a2a_agent_payload.json uv run register_external_agent.py
+
 get-mcp-agent-access-token:
 	cd workday-integration && \
 		uv sync && \
@@ -68,8 +73,8 @@ run-agent-locally:
 	$(eval WORKLOAD_IDENTITY_NAME := $(shell cat ./tmp/workload_identity_name.txt))
 	$(eval CREDENTIAL_PROVIDER_NAME := $(shell cat ./tmp/credential_provider_name.txt))
 	$(eval ACCESS_TOKEN := $(shell cat ./tmp/$(if $(filter a2a,$(MODE)),a2a,mcp)_agent_access_token.txt))
-	$(eval MCP_ENDPOINT := https://api.eu.wcp.workday.com/robotgw/coremcp)
-	$(eval A2A_AGENT_CARD_BASE_URL := https://eu.agent.workday.com/v1/a2a/devcon_wcpdev169/self-service-agent)
+	$(eval MCP_ENDPOINT := $(shell cd workday-integration && uv run --quiet config_value.py AGENT_MCP_ENDPOINT))
+	$(eval A2A_AGENT_CARD_BASE_URL := $(shell cd workday-integration && uv run --quiet config_value.py A2A_AGENT_CARD_BASE_URL))
 
 	@test -n "$(MODE)" || (echo "ERROR: MODE is required, use MODE=a2a or MODE=mcp"; exit 1)
 
@@ -94,8 +99,7 @@ start-dashboard:
 	$(eval AGENT_RUNTIME_ARN := $(shell cat ./tmp/agent_runtime_arn.txt))
 	$(info > AGENT_RUNTIME_ARN=$(AGENT_RUNTIME_ARN))
 
-	@rm -f ./dashboard/.env
-	@echo "AGENT_RUNTIME_ARN=$(AGENT_RUNTIME_ARN)" >> ./dashboard-js/.env
+	@echo "AGENT_RUNTIME_ARN=$(AGENT_RUNTIME_ARN)" > ./dashboard-js/.env
 	
 	cd dashboard-js && npm install
 	cd dashboard-js && node server.js

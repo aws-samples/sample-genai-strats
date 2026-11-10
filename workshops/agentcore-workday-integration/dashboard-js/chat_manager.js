@@ -7,14 +7,29 @@ export async function initAgent(callbackUrl) {
   return response;
 }
 
-export async function handleMessage(message) {
+// Sends the message and passes the agent's events ({delta}, {tool}, {error}, {done}) to onEvent.
+export async function handleMessage(message, onEvent) {
   console.log(`> handleMessage message=${message}`);
-  const response = await invokeAgent({ cmd: "prompt", prompt: message });
+  let length = 0;
+  const response = await invokeAgent({ cmd: "prompt", prompt: message }, (event) => {
+    if (event.delta) length += event.delta.length;
+    if (event.tool) console.log(`| handleMessage tool=${event.tool}`);
+    if (event.error) console.error(`| handleMessage error=${event.error}`);
+    onEvent(event);
+  });
+
+  if (response.streamed) {
+    console.log(`| handleMessage stream ended response_length=${length}`);
+    return;
+  }
+
+  // Non-streaming agent: {"status": "ok", "response": "..."}
   console.log(`> handleMessage response=${JSON.stringify(response)}`);
   if (response.status === "ok") {
-    console.log(`| handleMessage success response_length=${response.response?.length}`);
-    return response.response;
+    onEvent({ delta: response.response });
+    onEvent({ done: true });
+    return;
   }
   console.error(`| handleMessage non-ok status=${response.status} response=${JSON.stringify(response)}`);
-  return "Error communicating with agent. Try again.";
+  onEvent({ error: "Error communicating with agent. Try again." });
 }
