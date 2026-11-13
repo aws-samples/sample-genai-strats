@@ -12,12 +12,12 @@ A2A_AGENT_CLIENT_SECRET=
 
 AGENT_REGISTRATION_ENDPOINT=https://api.odp.wcp.workday.com/asor/v1/agentDefinition
 
-AGENT_MCP_ENDPOINT=https://odp.agent.workday.com/TENANT_ALIAS/mcp
+AGENT_MCP_ENDPOINT=https://us.agent.workday.com/TENANT_ALIAS/mcp
 AGENT_MCP_REDIRECT_URL=https://9svcav6rs3.execute-api.us-east-1.amazonaws.com/
-AGENT_MCP_AUTHORIZATION_ENDPOINT=https://odp.agent.workday.com/auth/authorize/TENANT_ALIAS
-AGENT_MCP_TOKEN_ENDPOINT=https://odp.agent.workday.com/auth/oauth2/TENANT_ALIAS/token
+AGENT_MCP_AUTHORIZATION_ENDPOINT=https://us.agent.workday.com/auth/authorize/TENANT_ALIAS
+AGENT_MCP_TOKEN_ENDPOINT=https://us.agent.workday.com/auth/oauth2/TENANT_ALIAS/token
 
-A2A_AGENT_AUTHORIZATION_ENDPOINT=https://odp.agent.workday.com/auth/authorize/TENANT_ALIAS
-A2A_AGENT_TOKEN_ENDPOINT=https://odp.agent.workday.com/auth/oauth2/TENANT_ALIAS/token
+A2A_AGENT_AUTHORIZATION_ENDPOINT=https://us.agent.workday.com/auth/authorize/TENANT_ALIAS
+A2A_AGENT_TOKEN_ENDPOINT=https://us.agent.workday.com/auth/oauth2/TENANT_ALIAS/token
 A2A_API_CLIENT_REDIRECT_URI=https://9svcav6rs3.execute-api.us-east-1.amazonaws.com/
-A2A_AGENT_CARD_BASE_URL=https://odp.agent.workday.com/v1/a2a/TENANT_ALIAS/self-service-agent
+A2A_AGENT_CARD_BASE_URL=https://us.agent.workday.com/v1/a2a/TENANT_ALIAS/self-service-agent
