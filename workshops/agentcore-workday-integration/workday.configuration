@@ -10,7 +10,7 @@ A2A_AGENT_CLIENT_SECRET=
 
 ### ---- DO NOT CHANGE BELOW VALUES ----
 
-AGENT_REGISTRATION_ENDPOINT=https://api.odp.wcp.workday.com/asor/v1/agentDefinition
+AGENT_REGISTRATION_ENDPOINT=https://api.us.wcp.workday.com/asor/v1/agentDefinition
 
 AGENT_MCP_ENDPOINT=https://us.agent.workday.com/TENANT_ALIAS/mcp
 AGENT_MCP_REDIRECT_URL=https://9svcav6rs3.execute-api.us-east-1.amazonaws.com/
