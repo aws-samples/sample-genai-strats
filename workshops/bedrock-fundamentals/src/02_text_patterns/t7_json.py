@@ -13,7 +13,7 @@ import textwrap
 import boto3
 
 REGION = os.environ.get("AWS_REGION", "us-east-1")
-MODEL_ID = "us.anthropic.claude-sonnet-4-6"
+MODEL_ID = "us.anthropic.claude-haiku-5-5"
 
 SAMPLE_EMAIL = """Dear Acme Investments,
 

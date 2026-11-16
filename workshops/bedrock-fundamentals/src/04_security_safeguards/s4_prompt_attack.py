@@ -19,7 +19,7 @@ import os
 import boto3
 
 REGION = os.environ.get("AWS_REGION", "us-east-1")
-MODEL_ID = "us.anthropic.claude-sonnet-4-6"
+MODEL_ID = "us.anthropic.claude-haiku-5-5"
 GUARDRAIL_ID = os.environ["GUARDRAIL_ID"]
 GUARDRAIL_VERSION = os.environ.get("GUARDRAIL_VERSION") or "DRAFT"
 SYSTEM_PROMPT = "You are a helpful assistant for Acme Investments customers. Answer briefly."

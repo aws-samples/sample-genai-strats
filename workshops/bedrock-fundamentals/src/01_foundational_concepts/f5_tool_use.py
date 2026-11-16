@@ -14,7 +14,7 @@ import os
 import boto3
 
 REGION = os.environ.get("AWS_REGION", "us-east-1")
-MODEL_ID = "us.anthropic.claude-sonnet-4-6"
+MODEL_ID = "us.anthropic.claude-haiku-5-5"
 
 bedrock = boto3.client("bedrock-runtime", region_name=REGION)
 
@@ -55,7 +55,7 @@ print("Sending prompt and tool description to the model...\n")
 response = bedrock.converse(
     modelId=MODEL_ID,
     messages=message_list,
-    inferenceConfig={"maxTokens": 2000, "temperature": 0},
+    inferenceConfig={"maxTokens": 2000},
     toolConfig={"tools": tool_list},
     system=system,
 )
@@ -93,7 +93,7 @@ print("Sending the tool result to the model...\n")
 response = bedrock.converse(
     modelId=MODEL_ID,
     messages=message_list,
-    inferenceConfig={"maxTokens": 2000, "temperature": 0},
+    inferenceConfig={"maxTokens": 2000},
     toolConfig={"tools": tool_list},
     system=system,
 )
@@ -121,7 +121,7 @@ print(response["output"]["message"]["content"][0]["text"])
 # response = bedrock.converse(
 #     modelId=MODEL_ID,
 #     messages=error_message_list,
-#     inferenceConfig={"maxTokens": 2000, "temperature": 0},
+#     inferenceConfig={"maxTokens": 2000},
 #     toolConfig={"tools": tool_list},
 #     system=system,
 # )

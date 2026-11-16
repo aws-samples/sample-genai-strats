@@ -16,16 +16,15 @@ import os
 import boto3
 
 REGION = os.environ.get("AWS_REGION", "us-east-1")
-MODEL_ID = os.environ.get("MODEL_ID") or "us.anthropic.claude-sonnet-4-6"
+MODEL_ID = os.environ.get("MODEL_ID") or "us.anthropic.claude-haiku-5-5"
 PROMPT = os.environ.get("PROMPT") or "Please write a haiku:"
 
 # maxTokens: upper limit on response length. The model stops with stopReason "max_tokens" if it hits it.
-# temperature: 0 = most predictable, 1 = most varied. Some newer models don't accept both
-#   temperature and topP, so this lab only sets temperature.
 # stopSequences: the model stops generating as soon as it writes one of these strings.
+# temperature (0 = most predictable, 1 = most varied) isn't set by default: some newer models, such as
+#   Claude Haiku 5.5, don't accept it.
 INFERENCE_CONFIG = {
     "maxTokens": 2000,
-    "temperature": 0.5,
     "stopSequences": [],
 }
 

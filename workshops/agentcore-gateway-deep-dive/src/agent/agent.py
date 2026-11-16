@@ -8,7 +8,7 @@ from logger import get_logger
 
 l = get_logger(__name__)
 
-model = BedrockModel(model_id="us.anthropic.claude-sonnet-4-6")
+model = BedrockModel(model_id="us.anthropic.claude-haiku-5-5")
 
 agent = Agent(
     model=model,

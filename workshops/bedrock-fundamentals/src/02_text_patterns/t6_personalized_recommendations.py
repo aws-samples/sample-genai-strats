@@ -17,7 +17,7 @@ import chromadb
 from chromadb.utils.embedding_functions import AmazonBedrockEmbeddingFunction
 
 REGION = os.environ.get("AWS_REGION", "us-east-1")
-MODEL_ID = "us.anthropic.claude-sonnet-4-6"
+MODEL_ID = "us.anthropic.claude-haiku-5-5"
 EMBEDDING_MODEL_ID = "amazon.titan-embed-text-v2:0"
 CHROMA_PATH = Path(__file__).resolve().parents[2] / "tmp" / "chroma"
 

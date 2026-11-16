@@ -17,7 +17,7 @@ import os
 import boto3
 
 REGION = os.environ.get("AWS_REGION", "us-east-1")
-MODEL_ID = "us.anthropic.claude-sonnet-4-6"
+MODEL_ID = "us.anthropic.claude-haiku-5-5"
 GUARDRAIL_ID = os.environ["GUARDRAIL_ID"]
 # DRAFT is the working copy, fine while you develop. In production, use a numbered version like "1".
 GUARDRAIL_VERSION = os.environ.get("GUARDRAIL_VERSION") or "DRAFT"

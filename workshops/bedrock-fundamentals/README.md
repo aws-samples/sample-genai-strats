@@ -22,7 +22,7 @@ See the workshop steps at [AWS Workshop Studio](https://catalog.us-east-1.prod.w
 ### Prerequisites
 
 - An AWS account with credentials configured, and access to these models in `us-east-1`:
-  - Anthropic Claude Sonnet 4.6 (`us.anthropic.claude-sonnet-4-6`)
+  - Anthropic Claude Haiku 5.5 (`us.anthropic.claude-haiku-5-5`)
   - Amazon Nova 2 Lite (`us.amazon.nova-2-lite-v1:0`)
   - Amazon Titan Text Embeddings V2 (`amazon.titan-embed-text-v2:0`)
   - Amazon Titan Multimodal Embeddings (`amazon.titan-embed-image-v1`)

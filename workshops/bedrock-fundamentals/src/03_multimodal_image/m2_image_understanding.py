@@ -16,7 +16,7 @@ import boto3
 from PIL import Image
 
 REGION = os.environ.get("AWS_REGION", "us-east-1")
-MODEL_ID = "us.anthropic.claude-sonnet-4-6"
+MODEL_ID = "us.anthropic.claude-haiku-5-5"
 IMAGES_DIR = Path(__file__).resolve().parent.parent / "shared" / "images"
 PROJECT_DIR = Path(__file__).resolve().parents[2]
 

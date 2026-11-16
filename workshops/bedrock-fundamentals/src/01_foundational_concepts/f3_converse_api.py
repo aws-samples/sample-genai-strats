@@ -14,7 +14,7 @@ from pathlib import Path
 import boto3
 
 REGION = os.environ.get("AWS_REGION", "us-east-1")
-MODEL_ID = "us.anthropic.claude-sonnet-4-6"
+MODEL_ID = "us.anthropic.claude-haiku-5-5"
 IMAGE_PATH = Path(__file__).resolve().parent.parent / "shared" / "images" / "image.webp"
 
 bedrock = boto3.client("bedrock-runtime", region_name=REGION)
