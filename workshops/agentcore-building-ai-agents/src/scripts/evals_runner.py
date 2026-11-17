@@ -36,7 +36,7 @@ LOG_GROUPS = [f"/aws/bedrock-agentcore/runtimes/{RUNTIME_ID}-DEFAULT", "aws/span
 # Batch evaluation names must match [a-zA-Z][a-zA-Z0-9_]{0,47}
 BATCH_NAME_PREFIX = f"{RUNTIME_NAME[:34]}_batch_"
 
-INJECTION_SECONDS = 180
+INJECTION_SECONDS = 60
 THREADS = 5
 TRACES_TIMEOUT_SECONDS = 180
 TRACES_POLL_INTERVAL_SECONDS = 15
