@@ -50,6 +50,7 @@ def get_response_from_model(prompt_content, image_bytes):
         modelId=MODEL_ID,
         messages=[image_message],
         inferenceConfig={"maxTokens": 2000},
+        additionalModelRequestFields={"thinking": {"type": "disabled"}},  # Claude Haiku 5.5 thinks by default; turn it off
     )
 
     return response["output"]["message"]["content"][0]["text"]

@@ -1,8 +1,9 @@
 # --- Module 2: Uncomment to deploy the Knowledge Base
 # module "knowledge_base" {
-#   source       = "./knowledge_base"
-#   project_name = local.project_name
-#   region       = local.region
+#   source                   = "./knowledge_base"
+#   project_name             = local.project_name
+#   region                   = local.region
+#   permissions_boundary_arn = var.permissions_boundary_arn
 # }
 
 # --- Module 3: Uncomment to deploy AgentCore Memory
@@ -17,6 +18,7 @@
 #   source                        = "./gateway"
 #   project_name                  = local.project_name
 #   region                        = local.region
+#   permissions_boundary_arn      = var.permissions_boundary_arn
 # }
 
 # --- Module 5: Uncomment to deploy AgentCore Identity
@@ -40,13 +42,15 @@
 #   cognito_scope                 = module.gateway.cognito_scope
 #   credential_provider_name      = module.identity.credential_provider_name
 #   workload_identity_name        = module.identity.workload_identity_name
+#   permissions_boundary_arn      = var.permissions_boundary_arn
 # }
 
 # --- Module 7: Uncomment to deploy AgentCore Evaluations
 # module "evals" {
-#   source           = "./evals"
-#   project_name     = local.project_name
-#   region           = local.region
-#   account_id       = local.account_id
-#   agent_runtime_id = module.runtime.agent_runtime_id
+#   source                   = "./evals"
+#   project_name             = local.project_name
+#   region                   = local.region
+#   account_id               = local.account_id
+#   agent_runtime_id         = module.runtime.agent_runtime_id
+#   permissions_boundary_arn = var.permissions_boundary_arn
 # }

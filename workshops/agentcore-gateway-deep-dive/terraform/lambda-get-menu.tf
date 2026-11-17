@@ -5,7 +5,8 @@ data "archive_file" "get_menu" {
 }
 
 resource "aws_iam_role" "get_menu" {
-  name = "${local.project_name}-get-menu"
+  name                 = "${local.project_name}-get-menu"
+  permissions_boundary = var.permissions_boundary_arn
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

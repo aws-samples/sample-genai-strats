@@ -56,6 +56,7 @@ response = bedrock.converse(
     modelId=MODEL_ID,
     messages=message_list,
     inferenceConfig={"maxTokens": 2000},
+    additionalModelRequestFields={"thinking": {"type": "disabled"}},  # Claude Haiku 5.5 thinks by default; turn it off
     toolConfig={"tools": tool_list},
     system=system,
 )
@@ -94,6 +95,7 @@ response = bedrock.converse(
     modelId=MODEL_ID,
     messages=message_list,
     inferenceConfig={"maxTokens": 2000},
+    additionalModelRequestFields={"thinking": {"type": "disabled"}},  # Claude Haiku 5.5 thinks by default; turn it off
     toolConfig={"tools": tool_list},
     system=system,
 )
@@ -122,6 +124,7 @@ print(response["output"]["message"]["content"][0]["text"])
 #     modelId=MODEL_ID,
 #     messages=error_message_list,
 #     inferenceConfig={"maxTokens": 2000},
+#     additionalModelRequestFields={"thinking": {"type": "disabled"}},  # Claude Haiku 5.5 thinks by default; turn it off
 #     toolConfig={"tools": tool_list},
 #     system=system,
 # )

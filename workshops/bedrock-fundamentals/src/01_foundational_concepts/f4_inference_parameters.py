@@ -7,8 +7,6 @@ below to see how they affect the response.
 
 Run from src/: [MODEL_ID=<model id>] [PROMPT="<prompt>"] uv run 01_foundational_concepts/f4_inference_parameters.py
 Examples:
-  MODEL_ID=us.amazon.nova-pro-v1:0 uv run 01_foundational_concepts/f4_inference_parameters.py
-  MODEL_ID=us.meta.llama3-3-70b-instruct-v1:0 uv run 01_foundational_concepts/f4_inference_parameters.py
   MODEL_ID=us.amazon.nova-2-lite-v1:0 PROMPT="Please write a limerick:" uv run 01_foundational_concepts/f4_inference_parameters.py
 """
 import os
@@ -21,8 +19,6 @@ PROMPT = os.environ.get("PROMPT") or "Please write a haiku:"
 
 # maxTokens: upper limit on response length. The model stops with stopReason "max_tokens" if it hits it.
 # stopSequences: the model stops generating as soon as it writes one of these strings.
-# temperature (0 = most predictable, 1 = most varied) isn't set by default: some newer models, such as
-#   Claude Haiku 5.5, don't accept it.
 INFERENCE_CONFIG = {
     "maxTokens": 2000,
     "stopSequences": [],
@@ -37,10 +33,14 @@ def get_text_response(model, input_content):
         "content": [{"text": input_content}],
     }
 
+    # Model-specific fields go in additionalModelRequestFields. Claude Haiku 5.5 thinks by default, so turn
+    # that off for Claude models. The other models in this lab don't take this field.
+    extra = {"additionalModelRequestFields": {"thinking": {"type": "disabled"}}} if "anthropic" in model else {}
     response = bedrock.converse(
         modelId=model,
         messages=[message],
         inferenceConfig=INFERENCE_CONFIG,
+        **extra,
     )
 
     return response["output"]["message"]["content"][0]["text"], response["stopReason"]

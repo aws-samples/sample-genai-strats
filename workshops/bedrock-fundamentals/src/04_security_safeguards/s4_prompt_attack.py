@@ -38,6 +38,7 @@ def get_response_with_guardrail(prompt):
             "content": [{"guardContent": {"text": {"text": prompt}}}],  # the user's input: tagged, checked
         }],
         inferenceConfig={"maxTokens": 1000},
+        additionalModelRequestFields={"thinking": {"type": "disabled"}},  # Claude Haiku 5.5 thinks by default; turn it off
         guardrailConfig={
             "guardrailIdentifier": GUARDRAIL_ID,
             "guardrailVersion": GUARDRAIL_VERSION,

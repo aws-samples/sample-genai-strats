@@ -22,6 +22,12 @@ MODEL_ID = "us.anthropic.claude-haiku-5-5"
 EMBEDDING_MODEL_ID = "amazon.titan-embed-text-v2:0"
 CHROMA_PATH = Path(__file__).resolve().parents[2] / "tmp" / "chroma"
 MAX_MESSAGES = 20
+# Without this, the model often answers follow-up questions from the chat history instead of searching
+SYSTEM_PROMPT = (
+    "You answer questions about Amazon Bedrock. Before every answer about Amazon Bedrock, including follow-up "
+    "questions, look the facts up with the get_amazon_bedrock_information tool, even if earlier results "
+    "seem related. Answer only from what the tool returns."
+)
 
 
 # --- Amazon Bedrock and Chroma
@@ -86,7 +92,9 @@ def call_model(bedrock, messages, tool_list):
     return bedrock.converse(
         modelId=MODEL_ID,
         messages=messages,
+        system=[{"text": SYSTEM_PROMPT}],
         inferenceConfig={"maxTokens": 2000, "stopSequences": []},
+        additionalModelRequestFields={"thinking": {"type": "disabled"}},  # Claude Haiku 5.5 thinks by default; turn it off
         toolConfig={"tools": tool_list},
     )
 

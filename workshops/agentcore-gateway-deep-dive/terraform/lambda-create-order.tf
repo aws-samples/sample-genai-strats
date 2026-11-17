@@ -5,7 +5,8 @@ data "archive_file" "create_order" {
 }
 
 resource "aws_iam_role" "create_order" {
-  name = "${local.project_name}-create-order"
+  name                 = "${local.project_name}-create-order"
+  permissions_boundary = var.permissions_boundary_arn
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

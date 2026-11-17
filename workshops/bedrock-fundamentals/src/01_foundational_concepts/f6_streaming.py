@@ -30,6 +30,7 @@ def get_streaming_response(prompt, streaming_callback):
         modelId=MODEL_ID,
         messages=[message],
         inferenceConfig={"maxTokens": 2000},
+        additionalModelRequestFields={"thinking": {"type": "disabled"}},  # Claude Haiku 5.5 thinks by default; turn it off
     )
 
     # Text arrives in contentBlockDelta events. Other events mark the start and end of the

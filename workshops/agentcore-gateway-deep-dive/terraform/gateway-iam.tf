@@ -1,5 +1,6 @@
 resource "aws_iam_role" "gateway" {
-  name = "${local.project_name}-agentcore-gw"
+  name                 = "${local.project_name}-agentcore-gw"
+  permissions_boundary = var.permissions_boundary_arn
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

@@ -8,3 +8,4 @@ variable "gateway_url" {}
 variable "cognito_scope" {}
 variable "workload_identity_name" {}
 variable "credential_provider_name" {}
+variable "permissions_boundary_arn" { default = null }

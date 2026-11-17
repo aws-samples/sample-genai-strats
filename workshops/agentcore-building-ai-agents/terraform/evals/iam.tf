@@ -1,6 +1,7 @@
 # --- Role assumed by AgentCore Evaluations to read agent traces and write results
 resource "aws_iam_role" "evals" {
-  name = "${var.project_name}-agentcore-evals"
+  name                 = "${var.project_name}-agentcore-evals"
+  permissions_boundary = var.permissions_boundary_arn
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

@@ -42,6 +42,7 @@ def get_summary(input_text, streaming_callback):
         modelId=MODEL_ID,
         messages=[doc_message],
         inferenceConfig={"maxTokens": 2000},
+        additionalModelRequestFields={"thinking": {"type": "disabled"}},  # Claude Haiku 5.5 thinks by default; turn it off
     )
 
     for event in response["stream"]:

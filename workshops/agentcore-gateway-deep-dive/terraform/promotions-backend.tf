@@ -25,7 +25,8 @@
 # }
 
 # resource "aws_iam_role" "promotions_backend" {
-#   name = "${local.project_name}-promotions-backend"
+#   name                 = "${local.project_name}-promotions-backend"
+#   permissions_boundary = var.permissions_boundary_arn
 
 #   assume_role_policy = jsonencode({
 #     Version = "2012-10-17"

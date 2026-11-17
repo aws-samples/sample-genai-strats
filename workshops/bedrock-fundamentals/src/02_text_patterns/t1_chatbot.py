@@ -50,6 +50,7 @@ def chat_with_model(message_history, new_text, streaming_callback):
         modelId=MODEL_ID,
         messages=messages,
         inferenceConfig={"maxTokens": 2000, "stopSequences": []},
+        additionalModelRequestFields={"thinking": {"type": "disabled"}},  # Claude Haiku 5.5 thinks by default; turn it off
     )
 
     # Show each chunk as it arrives, and keep the whole reply for the history

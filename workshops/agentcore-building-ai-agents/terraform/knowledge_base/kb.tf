@@ -1,5 +1,6 @@
 resource "aws_iam_role" "bedrock_kb" {
-    name = "${var.project_name}-bedrock-kb"
+    name                 = "${var.project_name}-bedrock-kb"
+    permissions_boundary = var.permissions_boundary_arn
 
     assume_role_policy = jsonencode({
         Version = "2012-10-17"

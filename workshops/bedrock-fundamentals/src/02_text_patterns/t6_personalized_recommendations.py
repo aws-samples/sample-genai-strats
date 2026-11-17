@@ -63,6 +63,7 @@ def get_personalized_recommendation(question, description):
         modelId=MODEL_ID,
         messages=[message],
         inferenceConfig={"maxTokens": 2000, "stopSequences": []},
+        additionalModelRequestFields={"thinking": {"type": "disabled"}},  # Claude Haiku 5.5 thinks by default; turn it off
     )
 
     return response["output"]["message"]["content"][0]["text"]

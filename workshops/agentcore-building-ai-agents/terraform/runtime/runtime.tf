@@ -14,7 +14,8 @@ locals {
 }
 
 resource "aws_iam_role" "agent" {
-  name = "${var.project_name}-agent"
+  name                 = "${var.project_name}-agent"
+  permissions_boundary = var.permissions_boundary_arn
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

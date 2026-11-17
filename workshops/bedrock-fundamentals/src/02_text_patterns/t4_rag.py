@@ -64,6 +64,7 @@ def get_rag_response(question, search_results, streaming_callback):
         modelId=MODEL_ID,
         messages=[message],
         inferenceConfig={"maxTokens": 2000, "stopSequences": []},
+        additionalModelRequestFields={"thinking": {"type": "disabled"}},  # Claude Haiku 5.5 thinks by default; turn it off
     )
 
     for event in response["stream"]:

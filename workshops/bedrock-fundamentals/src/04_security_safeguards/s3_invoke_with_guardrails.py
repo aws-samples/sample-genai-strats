@@ -33,6 +33,7 @@ def invoke_model_with_guardrail(prompt, trace=False):
     request_body = {
         "anthropic_version": "bedrock-2023-05-31",
         "max_tokens": 500,
+        "thinking": {"type": "disabled"},  # Claude Haiku 5.5 thinks by default; turn it off
         "system": SYSTEM_PROMPT,
         "messages": [
             {

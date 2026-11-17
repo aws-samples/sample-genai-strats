@@ -77,6 +77,7 @@ def chat_with_model(message_history, new_text=None, new_image_bytes=None):
         modelId=MODEL_ID,
         messages=messages,
         inferenceConfig={"maxTokens": 2000, "stopSequences": []},
+        additionalModelRequestFields={"thinking": {"type": "disabled"}},  # Claude Haiku 5.5 thinks by default; turn it off
     )
 
     output = response["output"]["message"]["content"][0]["text"]

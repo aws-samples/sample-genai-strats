@@ -5,7 +5,8 @@ data "archive_file" "interceptor" {
 }
 
 resource "aws_iam_role" "interceptor" {
-  name = "${local.project_name}-interceptor"
+  name                 = "${local.project_name}-interceptor"
+  permissions_boundary = var.permissions_boundary_arn
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

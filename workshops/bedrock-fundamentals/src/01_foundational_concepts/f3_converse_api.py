@@ -32,6 +32,7 @@ response = bedrock.converse(
     modelId=MODEL_ID,
     messages=message_list,
     inferenceConfig={"maxTokens": 2000},
+    additionalModelRequestFields={"thinking": {"type": "disabled"}},  # Claude Haiku 5.5 thinks by default; turn it off
 )
 response_message = response["output"]["message"]
 print(json.dumps(response_message, indent=4))
@@ -60,6 +61,7 @@ response = bedrock.converse(
     modelId=MODEL_ID,
     messages=message_list,
     inferenceConfig={"maxTokens": 2000},
+    additionalModelRequestFields={"thinking": {"type": "disabled"}},  # Claude Haiku 5.5 thinks by default; turn it off
 )
 response_message = response["output"]["message"]
 print(response_message["content"][0]["text"])
@@ -81,6 +83,7 @@ response = bedrock.converse(
     messages=message_list,
     system=[{"text": "Please respond to all requests in the style of a pirate."}],
     inferenceConfig={"maxTokens": 2000},
+    additionalModelRequestFields={"thinking": {"type": "disabled"}},  # Claude Haiku 5.5 thinks by default; turn it off
 )
 response_message = response["output"]["message"]
 print(response_message["content"][0]["text"])
